@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,Thumbnails,X,ZoomIn,ZoomOut} from 'lucide-react';
+import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,X,ZoomIn,ZoomOut} from 'lucide-react';
 
 type Lang='ar'|'en';
 type Theme='dark'|'light';
