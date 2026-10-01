@@ -112,7 +112,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
       mobileScrollSupport:true,flippingTime:920,swipeDistance:18,useMouseEvents:true,
       autoSize:true,startPage:0,startZIndex:10
     });
-    pf.on('flip',(e:any)=>setPage(Number(e.data)+1));
+    pf.on('flip',(e:any)=>{setPage(Number(e.data)+1);try{const Ctx=(window.AudioContext||(window as any).webkitAudioContext);const ac=new Ctx();const o=ac.createOscillator();const g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(170,ac.currentTime);o.frequency.exponentialRampToValueAtTime(75,ac.currentTime+.09);g.gain.setValueAtTime(.018,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.11);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.11)}catch{}});
     pf.loadFromImages(images);
     flipRef.current=pf;
     return()=>{try{pf.destroy()}catch{};flipRef.current=null};
@@ -171,7 +171,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
       <div className="thumb-grid visual-thumbs">{Array.from({length:ISSUE.pages},(_,i)=><button key={i} onClick={()=>jump(i+1)} className={page===i+1?'active':''}>{images[i]?<img src={images[i]} alt={'Page '+(i+1)}/>:null}<span>{String(i+1).padStart(2,'0')}</span></button>)}</div>}
     </aside>}
 
-    <main className="reader-stage flip-stage">
+    <main className="reader-stage flip-stage" onDoubleClick={()=>setZoom(v=>v>1?1:1.18)}>
       {error?<div className="reader-error"><BookOpen size={42}/><p>{error}</p><a href={ISSUE.pdf} target="_blank" rel="noreferrer">{t.download}</a></div>:
       !images.length?<div className="reader-loading flip-preparing"><i/><span>{lang==='ar'?'جارٍ تحويل المجلة إلى صفحات تفاعلية...':'Preparing interactive flip pages...'}</span><b>{progress}%</b></div>:
       <div className="flipbook-zoom" style={{transform:`scale(${zoom})`}}><div ref={bookHost} className="flipbook-host"/></div>}
