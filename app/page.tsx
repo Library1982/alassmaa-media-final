@@ -54,11 +54,12 @@ const copy={
 function ExternalMagazineReader({lang,onClose,url}:{lang:Lang,onClose:()=>void,url:string}){
   const t=copy[lang];
   const shell=useRef<HTMLDivElement|null>(null);
+  const [ready,setReady]=useState(false);
   useEffect(()=>{document.body.style.overflow='hidden';const key=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose()};window.addEventListener('keydown',key);return()=>{document.body.style.overflow='';window.removeEventListener('keydown',key)}},[onClose]);
   async function full(){try{if(!document.fullscreenElement)await shell.current?.requestFullscreen();else await document.exitFullscreen()}catch{}}
   return <div className="external-reader-overlay" ref={shell} role="dialog" aria-modal="true">
     <header className="external-reader-bar">
-      <div className="brand-lockup reader-brand-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div>
+      <div className="reader-original-brand"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/></div>
       <div className="external-reader-actions">
         <a href={url} target="_blank" rel="noreferrer"><ArrowUpRight size={18}/>{lang==='ar'?'فتح كامل':'Open full'}</a>
         <button onClick={full}><Maximize2 size={18}/>{t.fullscreen}</button>
@@ -66,7 +67,8 @@ function ExternalMagazineReader({lang,onClose,url}:{lang:Lang,onClose:()=>void,u
       </div>
     </header>
     <div className="external-reader-frame">
-      <iframe src={url} title="AMAN Digital Magazine" allow="fullscreen; clipboard-write" allowFullScreen/>
+      {!ready&&<div className="magazine-loader"><div className="orbit-wrap"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt=""/></div><img className="magazine-loader-logo" src="/logo-transparent.png" alt="Alassmaa Media"/><b>{lang==='ar'?'جارٍ فتح مجلة أمان':'OPENING AMAN MAGAZINE'}</b><i/></div>}
+      <iframe src={url} onLoad={()=>setReady(true)} title="AMAN Digital Magazine" allow="fullscreen; clipboard-write" allowFullScreen/>
     </div>
   </div>
 }
@@ -171,7 +173,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
 
   return <div className="reader-overlay premium-flip-reader" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
     <header className="reader-toolbar">
-      <div className="reader-title"><div className="brand-lockup reader-brand-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div><span className="reader-meta"><b>{t.reader}</b><small>{ISSUE.titleAr} · {ISSUE.issueAr} · {ISSUE.year}</small></span></div>
+      <div className="reader-title"><div className="reader-original-brand"><img src="/logo-transparent.png" alt="Alassmaa Media"/></div><span className="reader-meta"><b>{t.reader}</b><small>{ISSUE.titleAr} · {ISSUE.issueAr} · {ISSUE.year}</small></span></div>
       <div className="reader-actions">
         <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
         <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><BookOpen size={18}/><span>{t.thumbs}</span></button>
@@ -212,11 +214,11 @@ export default function Home(){
   const ids=['home','current','archive','sections','advertise','contact'];
   useEffect(()=>{const saved=localStorage.getItem('alassmaa-theme') as Theme|null;const l=localStorage.getItem('alassmaa-lang') as Lang|null;if(saved)setTheme(saved);if(l)setLang(l);const timer=window.setTimeout(()=>setLoading(false),1900);return()=>window.clearTimeout(timer)},[]);
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
-  const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(90deg,rgba(12,2,18,.96),rgba(35,6,50,.76) 43%,rgba(20,5,24,.25) 75%,rgba(5,1,9,.72)),url('"+ISSUE.cover+"')"}),[]);
+  const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(100deg,rgba(12,2,18,.98),rgba(35,6,50,.90) 48%,rgba(18,5,24,.78) 100%)"}),[]);
   return <>
-    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="brand-lockup loader-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
+    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="orbit-wrap main-orbit"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt=""/></div><img className="loader-original-logo" src="/logo-transparent.png" alt="Alassmaa Media"/><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
     <header className="site-header">
-      <a className="brand brand-lockup" href="#home"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></a>
+      <a className="brand brand-original" href="#home"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/><span className="brand-sheen" aria-hidden="true"/></a>
       <nav className="desktop-nav">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav>
       <div className="header-actions">
         <button className="round-control" onClick={()=>setTheme(theme==='dark'?'light':'dark')} title={t.theme}>{theme==='dark'?<Sun size={18}/>:<Moon size={18}/>}</button>
@@ -229,7 +231,7 @@ export default function Home(){
 
     <main>
       <section id="home" className="mag-hero" style={heroStyle}>
-        <div className="hero-grain"/><div className="hero-purple-orb"/><div className="hero-gold-beam"/>
+        <div className="hero-cover-ghost" aria-hidden="true"><img src={ISSUE.cover} alt=""/></div><div className="hero-grain"/><div className="hero-purple-orb"/><div className="hero-gold-beam"/>
         <div className="container hero-layout">
           <div className="hero-copy">
             <span className="eyebrow"><i/>{t.latest} · {ISSUE.issueAr} · {ISSUE.year}</span>
@@ -268,7 +270,7 @@ export default function Home(){
       <section id="contact" className="section contact-section"><div className="container contact-grid"><div><span className="section-kicker">05 / {t.contactTag}</span><h2>{t.contactTitle}</h2><p>{t.contactText}</p></div><div className="contact-links"><a href={'mailto:'+contact}><Mail size={20}/><span>{contact}</span><ArrowUpRight size={18}/></a><a href={'tel:'+phone}><span>☎</span><b>{phone}</b><ArrowUpRight size={18}/></a></div></div></section>
     </main>
 
-    <footer className="footer"><div className="container footer-grid"><div><div className="brand-lockup footer-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div><p>{t.footer}</p></div><nav>{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav><div className="footer-social"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={19}/>Instagram</a><a href={'mailto:'+contact}><Mail size={19}/>{contact}</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA LLC. {t.rights}</span><a href="#home">↑ TOP</a></div></footer>
+    <footer className="footer"><div className="container footer-grid"><div><div className="footer-original-logo"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/><span className="brand-sheen" aria-hidden="true"/></div><p>{t.footer}</p></div><nav>{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav><div className="footer-social"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={19}/>Instagram</a><a href={'mailto:'+contact}><Mail size={19}/>{contact}</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA LLC. {t.rights}</span><a href="#home">↑ TOP</a></div></footer>
 
     <div className="contact-floaters"><a className="float wa" href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" aria-label="WhatsApp"><span>◉</span></a><a className="float call" href={'tel:'+phone} aria-label="Call"><span>☎</span></a></div>
     {reader&&(externalReader?<ExternalMagazineReader lang={lang} url={externalReader} onClose={()=>setReader(false)}/>:<MagazineReader lang={lang} onClose={()=>setReader(false)}/>)}
