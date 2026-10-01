@@ -37,7 +37,7 @@ const copy={
   },
   en:{
     nav:['Home','Current Issue','Archive','Sections','Advertise','Contact'],
-    latest:'LATEST ISSUE',heroTitle:'AMAN Magazine',heroText:'A monthly professional publication spanning law, administration, security, society and culture — knowledge that strengthens awareness.',
+    latest:'LATEST ISSUE',heroTitle:'مجلة أمان',heroText:'A monthly professional publication spanning law, administration, security, society and culture — knowledge that strengthens awareness.',
     read:'Read Issue',download:'Download PDF',archive:'Browse Archive',scroll:'Discover the magazine',
     currentTag:'CURRENT ISSUE',currentTitle:'A professional knowledge platform with an Emirati identity',currentText:'This issue brings together leadership, law, security, management, artificial intelligence and success stories in a modern editorial experience.',
     pages:'Pages',monthly:'Monthly magazine',categories:'Law · Management · Security · Society · Culture',
@@ -68,7 +68,7 @@ function ExternalMagazineReader({lang,onClose,url}:{lang:Lang,onClose:()=>void,u
     </header>
     <div className="external-reader-frame">
       {!ready&&<div className="magazine-loader"><div className="orbit-wrap"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt=""/></div><img className="magazine-loader-logo" src="/logo-transparent.png" alt="Alassmaa Media"/><b>{lang==='ar'?'جارٍ فتح مجلة أمان':'OPENING AMAN MAGAZINE'}</b><i/></div>}
-      <iframe src={url} onLoad={()=>setReady(true)} title="AMAN Digital Magazine" allow="fullscreen; clipboard-write" allowFullScreen/>
+      <iframe src={url} onLoad={()=>setReady(true)} title="مجلة أمان الرقمية" allow="fullscreen; clipboard-write" allowFullScreen/>
     </div>
   </div>
 }
@@ -150,7 +150,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
   },[onClose]);
 
   async function full(){try{if(!document.fullscreenElement)await shell.current?.requestFullscreen();else await document.exitFullscreen()}catch{}}
-  async function share(){try{if(navigator.share)await navigator.share({title:'AMAN Magazine',url:window.location.href});else await navigator.clipboard.writeText(window.location.href)}catch{}}
+  async function share(){try{if(navigator.share)await navigator.share({title:'مجلة أمان',url:window.location.href});else await navigator.clipboard.writeText(window.location.href)}catch{}}
   function jump(p:number){const target=Math.max(1,Math.min(ISSUE.pages,p));try{flipRef.current?.flip(target-1,'top')}catch{flipRef.current?.turnToPage(target-1)}setPage(target);setDrawer(null)}
   function next(){flipRef.current?.flipNext('top')}
   function prev(){flipRef.current?.flipPrev('top')}
@@ -235,7 +235,7 @@ export default function Home(){
         <div className="container hero-layout">
           <div className="hero-copy">
             <span className="eyebrow"><i/>{t.latest} · {ISSUE.issueAr} · {ISSUE.year}</span>
-            <h1>{t.heroTitle}</h1><p>{t.heroText}</p>
+            <h1 className={lang==='ar'?'arabic-mag-title':''}>{lang==='ar'?<><span>مجلة</span> <em>أمان</em></>:t.heroTitle}</h1><p>{t.heroText}</p>
             <div className="hero-actions">
               <button className="primary-cta" onClick={()=>setReader(true)}><BookOpen size={20}/>{t.read}<ArrowUpRight size={18}/></button>
               <a className="secondary-cta" href={ISSUE.pdf} download><Download size={19}/>{t.download}</a>
@@ -261,11 +261,11 @@ export default function Home(){
       </div></section>
 
       <section id="archive" className="section archive-section"><div className="container"><div className="section-head split"><div><span className="section-kicker">03 / {t.archiveTag}</span><h2>{t.archiveTitle}</h2></div><p>{t.archiveText}</p></div>
-        <div className="archive-grid"><article className="issue-card featured"><div className="issue-card-cover"><img src={ISSUE.cover} alt="AMAN Issue 0"/><span>{t.latest}</span></div><div><small>{ISSUE.issueAr} · {ISSUE.year}</small><h3>{lang==='ar'?'مجلة أمان — الإصدار الحالي':'AMAN Magazine — Current Issue'}</h3><button onClick={()=>setReader(true)}>{t.read}<ArrowUpRight size={17}/></button></div></article>
+        <div className="archive-grid"><article className="issue-card featured"><div className="issue-card-cover"><img src={ISSUE.cover} alt="AMAN Issue 0"/><span>{t.latest}</span></div><div><small>{ISSUE.issueAr} · {ISSUE.year}</small><h3>{lang==='ar'?'مجلة أمان — الإصدار الحالي':'مجلة أمان — Current Issue'}</h3><button onClick={()=>setReader(true)}>{t.read}<ArrowUpRight size={17}/></button></div></article>
         {[1,2].map(n=><article className="issue-card placeholder" key={n}><div className="placeholder-mark"><img src="/logo-emblem.png" alt=""/></div><div><small>{lang==='ar'?'الأرشيف جاهز للإصدار القادم':'ARCHIVE READY'}</small><h3>{t.coming}</h3></div></article>)}</div>
       </div></section>
 
-      <section id="advertise" className="advertise-section"><div className="container advertise-grid"><div><span className="section-kicker">04 / {t.advertiseTag}</span><h2>{t.advertiseTitle}</h2><p>{t.advertiseText}</p><a className="primary-cta" href={'https://wa.me/'+wa+'?text='+encodeURIComponent(lang==='ar'?'مرحباً، أود الحصول على الباقة الإعلامية والإعلانية لمجلة أمان.':'Hello, I would like the AMAN Magazine advertising media kit.')} target="_blank" rel="noreferrer">{t.advertise}<ArrowUpRight size={19}/></a></div><div className="ad-visual"><span>AMAN</span><b>MEDIA KIT</b><i/></div></div></section>
+      <section id="advertise" className="advertise-section"><div className="container advertise-grid"><div><span className="section-kicker">04 / {t.advertiseTag}</span><h2>{t.advertiseTitle}</h2><p>{t.advertiseText}</p><a className="primary-cta" href={'https://wa.me/'+wa+'?text='+encodeURIComponent(lang==='ar'?'مرحباً، أود الحصول على الباقة الإعلامية والإعلانية لمجلة أمان.':'Hello, I would like the مجلة أمان advertising media kit.')} target="_blank" rel="noreferrer">{t.advertise}<ArrowUpRight size={19}/></a></div><div className="ad-visual"><span>AMAN</span><b>MEDIA KIT</b><i/></div></div></section>
 
       <section id="contact" className="section contact-section"><div className="container contact-grid"><div><span className="section-kicker">05 / {t.contactTag}</span><h2>{t.contactTitle}</h2><p>{t.contactText}</p></div><div className="contact-links"><a href={'mailto:'+contact}><Mail size={20}/><span>{contact}</span><ArrowUpRight size={18}/></a><a href={'tel:'+phone}><span>☎</span><b>{phone}</b><ArrowUpRight size={18}/></a></div></div></section>
     </main>
