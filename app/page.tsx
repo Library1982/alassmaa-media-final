@@ -283,8 +283,11 @@ export default function Home(){
         <span className="floater-label"><span>{lang==='ar'?'اتصل بنا الآن • نحن جاهزون لمساعدتك':'Call us now • We’re ready to help'}</span></span>
         <span className="floater-icon">
           <svg className="call-red-svg" viewBox="0 0 64 64" aria-hidden="true">
-            <circle cx="32" cy="32" r="27" fill="none" stroke="currentColor" strokeWidth="4.5"/>
-            <path d="M25.8 21.5c1.2-1.2 3.1-1.2 4.3 0l3.3 3.3c1.2 1.2 1.2 3.1 0 4.3l-2.4 2.4c2.4 4.1 5.9 7.5 10 10l2.4-2.4c1.2-1.2 3.1-1.2 4.3 0l3.3 3.3c1.2 1.2 1.2 3.1 0 4.3l-1.9 1.9c-1.9 1.9-4.8 2.4-7.2 1.2-5.7-2.7-10.7-6.7-14.6-11.6-3.2-4-5.8-8.5-7.3-13.3-.7-2.2-.1-4.5 1.5-6.1l1.3-1.3Z" fill="currentColor"/>
+            <circle cx="32" cy="32" r="27" fill="none" stroke="currentColor" strokeWidth="4"/>
+            <path d="M19.7 21.6c1.6-1.7 4.1-2 6-.8l3.6 2.3c1.9 1.2 2.5 3.7 1.4 5.6l-2.2 3.7c2.4 4 5.2 6.8 9.2 9.2l3.7-2.2c1.9-1.1 4.4-.5 5.6 1.4l2.3 3.6c1.2 1.9.9 4.4-.8 6-2.7 2.6-6.7 3.3-10.1 1.7-5.1-2.4-9.5-5.9-13.2-10.5-3.6-4.4-6.2-9.5-7.7-14.9-.9-3.3-.1-7 2.2-9.1Z" fill="currentColor"/>
+            <path d="M37 18c4 1.2 7.8 5 9 9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round"/>
+            <path d="M39.8 13.8c6 1.8 11.6 7.4 13.4 13.4" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round"/>
+            <path d="M34.3 22.5c2.2.7 4.4 2.9 5.1 5.1" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round"/>
           </svg>
         </span>
       </a>
