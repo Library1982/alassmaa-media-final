@@ -151,7 +151,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
 
   return <div className="reader-overlay premium-flip-reader" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
     <header className="reader-toolbar">
-      <div className="reader-title"><div className="reader-brand-lockup"><img src="/logo-transparent.png" alt="Alassmaa Media"/></div><span><b>{t.reader}</b><small>{ISSUE.titleAr} · {ISSUE.issueAr} · {ISSUE.year}</small></span></div>
+      <div className="reader-title"><div className="brand-lockup reader-brand-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div><span className="reader-meta"><b>{t.reader}</b><small>{ISSUE.titleAr} · {ISSUE.issueAr} · {ISSUE.year}</small></span></div>
       <div className="reader-actions">
         <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
         <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><BookOpen size={18}/><span>{t.thumbs}</span></button>
@@ -194,9 +194,9 @@ export default function Home(){
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
   const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(90deg,rgba(12,2,18,.96),rgba(35,6,50,.76) 43%,rgba(20,5,24,.25) 75%,rgba(5,1,9,.72)),url('"+ISSUE.cover+"')"}),[]);
   return <>
-    {loading&&<div className="cinema-loader"><div className="loader-halo"/><img src="/logo-emblem.png" alt="Alassmaa Media"/><span>ALASSMAA MEDIA</span><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
+    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="brand-lockup loader-lockup"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></div><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
     <header className="site-header">
-      <a className="brand" href="#home"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/></a>
+      <a className="brand brand-lockup" href="#home"><img src="/logo-emblem.png" alt=""/><span><strong>العصماء الإعلامية</strong><small>Alassmaa Media LLC</small></span></a>
       <nav className="desktop-nav">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav>
       <div className="header-actions">
         <button className="round-control" onClick={()=>setTheme(theme==='dark'?'light':'dark')} title={t.theme}>{theme==='dark'?<Sun size={18}/>:<Moon size={18}/>}</button>
