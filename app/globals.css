@@ -868,3 +868,163 @@ html[dir=rtl] .footer-original-logo img{object-position:right center!important}
   transition:width .05s linear;
   box-shadow:0 0 18px rgba(215,168,61,.22);
 }
+
+
+/* Premium WhatsApp message hover + transparent ringing call icon */
+.contact-floaters{
+  position:fixed;
+  right:22px;
+  bottom:24px;
+  z-index:90;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:flex-end;
+  direction:ltr;
+}
+html[dir="rtl"] .contact-floaters{
+  right:auto;
+  left:22px;
+  align-items:flex-start;
+}
+.contact-floater{
+  position:relative;
+  height:58px;
+  display:flex;
+  align-items:center;
+  color:#fff;
+  text-decoration:none;
+  filter:drop-shadow(0 14px 28px rgba(0,0,0,.28));
+}
+.contact-floater .floater-icon{
+  position:relative;
+  z-index:2;
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:transparent!important;
+  box-shadow:none!important;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .35s ease;
+}
+.contact-floater .floater-label{
+  height:46px;
+  max-width:0;
+  opacity:0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  margin-inline-start:-10px;
+  padding:0;
+  background:rgba(15,8,20,.95);
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:24px 8px 8px 24px;
+  backdrop-filter:blur(14px);
+  transition:max-width .5s cubic-bezier(.2,.8,.2,1),opacity .25s ease,padding .5s ease;
+}
+html[dir="rtl"] .contact-floater .floater-label{
+  order:2;
+  border-radius:8px 24px 24px 8px;
+}
+.contact-floater .floater-label span{
+  display:block;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.01em;
+  transform:translateX(12px);
+  transition:transform .45s ease;
+}
+.contact-floater:hover .floater-label,
+.contact-floater:focus-visible .floater-label{
+  max-width:330px;
+  opacity:1;
+  padding:0 22px 0 20px;
+}
+html[dir="rtl"] .contact-floater:hover .floater-label,
+html[dir="rtl"] .contact-floater:focus-visible .floater-label{
+  padding:0 20px 0 22px;
+}
+.contact-floater:hover .floater-label span,
+.contact-floater:focus-visible .floater-label span{
+  transform:translateX(0);
+}
+.whatsapp-svg{
+  width:42px!important;
+  height:42px!important;
+  color:#00c853!important;
+  filter:drop-shadow(0 7px 14px rgba(0,200,83,.28));
+  transition:transform .25s ease;
+}
+.whatsapp-floater .floater-icon::after,
+.call-floater .floater-icon::after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  opacity:0;
+  pointer-events:none;
+}
+.whatsapp-floater .floater-icon::after{
+  border:2px solid rgba(0,200,83,.36);
+}
+.call-floater .floater-icon::after{
+  border:2px solid rgba(220,47,31,.38);
+}
+.whatsapp-floater:hover .whatsapp-svg,
+.whatsapp-floater:focus-visible .whatsapp-svg{
+  animation:whatsappMessage .7s ease-in-out infinite alternate;
+}
+.whatsapp-floater:hover .floater-icon::after,
+.whatsapp-floater:focus-visible .floater-icon::after{
+  opacity:1;
+  animation:widgetPulse 1.15s ease-out infinite;
+}
+.whatsapp-floater:hover .floater-label,
+.whatsapp-floater:focus-visible .floater-label{
+  box-shadow:0 10px 30px rgba(0,200,83,.18);
+}
+.call-red-svg{
+  width:48px!important;
+  height:48px!important;
+  color:#df2f20!important;
+  overflow:visible;
+  filter:drop-shadow(0 7px 15px rgba(223,47,32,.28));
+  transform-origin:50% 50%;
+}
+.call-floater:hover .call-red-svg,
+.call-floater:focus-visible .call-red-svg{
+  animation:phoneRingStrong .34s ease-in-out infinite alternate;
+}
+.call-floater:hover .floater-icon::after,
+.call-floater:focus-visible .floater-icon::after{
+  opacity:1;
+  animation:widgetPulse 1s ease-out infinite;
+}
+.call-floater:hover .floater-label,
+.call-floater:focus-visible .floater-label{
+  box-shadow:0 10px 30px rgba(223,47,32,.17);
+}
+@keyframes whatsappMessage{
+  from{transform:translateY(0) scale(1) rotate(-2deg)}
+  to{transform:translateY(-2px) scale(1.08) rotate(2deg)}
+}
+@keyframes phoneRingStrong{
+  from{transform:rotate(-13deg) scale(1)}
+  to{transform:rotate(13deg) scale(1.08)}
+}
+@keyframes widgetPulse{
+  0%{transform:scale(.88);opacity:.72}
+  100%{transform:scale(1.3);opacity:0}
+}
+@media(max-width:700px){
+  .contact-floaters{right:14px;bottom:16px;gap:9px}
+  html[dir="rtl"] .contact-floaters{right:auto;left:14px}
+  .contact-floater,.contact-floater .floater-icon{width:52px;height:52px}
+  .contact-floater .floater-icon{flex-basis:52px}
+  .contact-floater .floater-label{display:none}
+  .whatsapp-svg{width:38px!important;height:38px!important}
+  .call-red-svg{width:44px!important;height:44px!important}
+}
