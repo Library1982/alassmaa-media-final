@@ -1,41 +1,216 @@
 'use client';
-import {useEffect,useState} from 'react';
-import {ArrowDown,ArrowLeft,ArrowRight,ArrowUpRight,Camera,Check,ChevronDown,Globe2,Instagram,Mail,Menu,Moon,Play,Sun,Video, X} from 'lucide-react';
 
-type Lang='en'|'ar';
-const copy={en:{nav:['Home','About','Services','Portfolio','Media Wall','Contact'],eyebrow:'CREATIVE STUDIO · AJMAN, UAE',hero1:'We make',hero2:'ideas move.',heroText:'Stories that stay with you. Experiences that move your audience. Creative work made for what comes next.',start:'Start a project',explore:'Explore our work',scroll:'SCROLL TO DISCOVER',aboutTag:'01 / THE STUDIO',aboutHead:'Built to make an impression.',aboutText:'Alassmaa Media brings strategy, production and imagination into one creative space. From the first spark to the final frame, we create media that connects.',servicesTag:'02 / WHAT WE DO',servicesHead:'Everything starts with an idea.',servicesText:'One creative partner. Every medium.',services:['Media production','Photography & video','Social media','Brand & identity','Digital campaigns','Content creation','Events & campaigns','Web experiences'],serviceDesc:['Stories shaped for every screen.','Every frame, deliberately made.','Content designed to connect.','Distinctive identities with purpose.','Ideas built to travel further.','Words, visuals and stories with impact.','Experiences worth remembering.','Digital spaces with a point of view.'],workTag:'03 / SELECTED WORK',workHead:'Made to be seen.',workText:'Concept examples showing how your projects could be presented.',wallTag:'04 / MEDIA WALL',wallHead:'An exhibition of ideas.',wallText:'Explore the work by discipline.',filters:['All','Film','Campaigns','Photography','Branding','Social'],project:'View concept',sample:'SAMPLE CONCEPT',insightsTag:'05 / PERSPECTIVES',insightsHead:'Ideas in motion.',insight1:'The art of telling a story in six seconds',insight2:'Designing identities that live everywhere',clientsTag:'OUR APPROACH',clientsHead:'From the first conversation to the final frame.',steps:['Discover','Imagine','Create','Launch'],contactTag:'06 / LET’S TALK',contactHead:'Have something in mind?',contactText:'Tell us what you are creating. We will help shape the next move.',name:'Your name',email:'Email address',service:'What do you need?',budget:'Estimated budget',message:'Tell us about your project',submit:'Prepare enquiry',mailFallback:'Your email app will open with your enquiry ready to send.',footer:'Creative thinking. Meaningful impact.',rights:'All rights reserved.',close:'Close',next:'Next project',menu:'Open menu',theme:'Toggle color theme',language:'Switch language',whatsapp:'Chat on WhatsApp',location:'Ajman, United Arab Emirates'},ar:{nav:['الرئيسية','من نحن','خدماتنا','أعمالنا','معرض الوسائط','تواصل معنا'],eyebrow:'استوديو إبداعي · عجمان، الإمارات',hero1:'نمنح الأفكار',hero2:'حياةً وحركة.',heroText:'قصص تبقى في الذاكرة. تجارب تحرّك جمهورك. إبداع صُمم للمستقبل.',start:'ابدأ مشروعك',explore:'استكشف أعمالنا',scroll:'اكتشف المزيد',aboutTag:'٠١ / الاستوديو',aboutHead:'نصنع حضوراً لا يُنسى.',aboutText:'تجمع العصماء إعلام الاستراتيجية والإنتاج والخيال في مساحة إبداعية واحدة. من الفكرة الأولى حتى المشهد الأخير، نصنع محتوى يصل إلى الجمهور.',servicesTag:'٠٢ / ماذا نقدم',servicesHead:'كل شيء يبدأ بفكرة.',servicesText:'شريك إبداعي واحد لكل الوسائط.',services:['الإنتاج الإعلامي','التصوير والفيديو','وسائل التواصل الاجتماعي','الهوية والعلامة','الحملات الرقمية','صناعة المحتوى','الفعاليات والحملات','التجارب الرقمية'],serviceDesc:['قصص تناسب كل شاشة.','كل إطار صُنع بعناية.','محتوى يقرّبك من جمهورك.','هويات مميزة وهادفة.','أفكار تصل إلى مدى أبعد.','كلمات وصور وقصص مؤثرة.','تجارب تستحق التذكّر.','مساحات رقمية برؤية واضحة.'],workTag:'٠٣ / أعمال مختارة',workHead:'أعمال تستحق المشاهدة.',workText:'نماذج تصورية لكيفية عرض مشاريعكم.',wallTag:'٠٤ / معرض الوسائط',wallHead:'معرض للأفكار.',wallText:'استكشف الأعمال حسب المجال.',filters:['الكل','أفلام','حملات','تصوير','هوية','تواصل'],project:'عرض النموذج',sample:'نموذج تصوري',insightsTag:'٠٥ / رؤى',insightsHead:'أفكار في حركة.',insight1:'فن رواية قصة في ست ثوانٍ',insight2:'تصميم هوية تعيش في كل مكان',clientsTag:'منهجنا',clientsHead:'من أول لقاء إلى آخر مشهد.',steps:['نكتشف','نتخيل','نبدع','نطلق'],contactTag:'٠٦ / لنتحدث',contactHead:'لديك فكرة مشروع؟',contactText:'أخبرنا بما تود إنجازه، ولنحدد الخطوة التالية معاً.',name:'اسمك',email:'بريدك الإلكتروني',service:'ما الخدمة المطلوبة؟',budget:'الميزانية التقريبية',message:'أخبرنا عن مشروعك',submit:'إعداد الاستفسار',mailFallback:'سيفتح تطبيق البريد لديك مع الاستفسار جاهزاً للإرسال.',footer:'تفكير إبداعي. أثر حقيقي.',rights:'جميع الحقوق محفوظة.',close:'إغلاق',next:'المشروع التالي',menu:'فتح القائمة',theme:'تغيير السمة',language:'تغيير اللغة',whatsapp:'تواصل عبر واتساب',location:'عجمان، الإمارات العربية المتحدة'}};
-const projects=[{title:'THE NEW PERSPECTIVE',ar:'منظور جديد',category:'Film',image:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1400&q=85',desc:'A cinematic concept where movement becomes the message.'},{title:'OBJECTS OF DESIRE',ar:'تفاصيل تستحق التأمل',category:'Photography',image:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1400&q=85',desc:'Product storytelling through light, texture and composition.'},{title:'CITY IN MOTION',ar:'مدينة تنبض بالحياة',category:'Campaigns',image:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400&q=85',desc:'An urban campaign built for every screen.'},{title:'STILL / MOVING',ar:'ثابت ومتحرك',category:'Social',image:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1400&q=85',desc:'Short-form stories with a strong visual rhythm.'},{title:'FORM & FEELING',ar:'شكل وإحساس',category:'Branding',image:'https://images.unsplash.com/photo-1541462608143-67571c6738dd?w=1400&q=85',desc:'A visual language designed to feel unmistakable.'},{title:'AFTER HOURS',ar:'ما بعد الغروب',category:'Film',image:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1400&q=85',desc:'A film concept shaped by atmosphere and contrast.'}];
-const ids=['home','about','services','portfolio','media-wall','contact'];
-export default function Home(){const [lang,setLang]=useState<Lang>('ar'),[theme,setTheme]=useState<'dark'|'light'>('dark'),[menu,setMenu]=useState(false),[filter,setFilter]=useState('All'),[selected,setSelected]=useState<number|null>(null),[mounted,setMounted]=useState(false),[loading,setLoading]=useState(true),[heroSlide,setHeroSlide]=useState(0);
-useEffect(()=>{setMounted(true); const timer=window.setTimeout(()=>setLoading(false),2400); const saved=localStorage.getItem('alassmaa-theme');if(saved==='light'||saved==='dark')setTheme(saved);const l=localStorage.getItem('alassmaa-lang');if(l==='en'||l==='ar')setLang(l as Lang); return()=>window.clearTimeout(timer)},[]);
-useEffect(()=>{const slider=window.setInterval(()=>setHeroSlide(v=>(v+1)%5),5000);return()=>window.clearInterval(slider)},[]);
-useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;if(mounted){localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)}},[lang,theme,mounted]);
-useEffect(()=>{if(selected!==null){const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')setSelected(null)};document.addEventListener('keydown',onKey);document.body.style.overflow='hidden';return()=>{document.removeEventListener('keydown',onKey);document.body.style.overflow=''}}},[selected]);
-const t=copy[lang];const wa=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||'971555470136';const phone=process.env.NEXT_PUBLIC_PHONE_NUMBER||'+971555470136';const contact=process.env.NEXT_PUBLIC_CONTACT_EMAIL||'hello@alassmaamedia.com';
-function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();const f=new FormData(e.currentTarget);const lines=['Name: '+f.get('name'),'Email: '+f.get('email'),'Service: '+f.get('service'),'Budget: '+f.get('budget'),'Project: '+f.get('message')];window.location.href=`mailto:${contact}?subject=${encodeURIComponent('Project enquiry — Alassmaa Media')}&body=${encodeURIComponent(lines.join('\n'))}`}
-const heroImages=[
-'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=2400&q=92',
-'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=2400&q=92',
-'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=2400&q=92',
-'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2400&q=92',
-'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=2400&q=92'];
-return <>{loading&&<div className="cinema-loader"><div className="loader-beam"/><div className="loader-frame"><img src="/logo-emblem.png" alt="العصماء إعلام"/><span className="loader-kicker">ALASSMAA MEDIA · CREATIVE STUDIO</span><div className="loader-track"><i/></div><b>{lang==='ar'?'نصنع الصورة. نحرك الفكرة.':'WE FRAME. WE MOVE. WE CREATE.'}</b></div></div>}<header className="site-header"><a href="#home" className="brand" aria-label="Alassmaa Media home"><img className="logo-transparent" src="/logo-transparent.png" alt="العصماء إعلام — Alassmaa Media"/></a><nav className="desktop-nav" aria-label="Main navigation">{t.nav.map((n,i)=><a key={ids[i]} href={'#'+ids[i]}>{n}</a>)}</nav><div className="header-actions"><button className="icon-button theme-toggle" onClick={()=>setTheme(theme==='dark'?'light':'dark')} aria-label={t.theme} title={t.theme}>{theme==='dark'?<Sun size={19}/>:<Moon size={19}/>}</button><button className="language-button" onClick={()=>setLang(lang==='en'?'ar':'en')} aria-label={t.language}><Globe2 size={17}/><span>{lang==='en'?'العربية':'EN'}</span></button><a className="nav-cta shimmer-button" href="#contact"><span className="button-shimmer" aria-hidden="true"/>{t.start}<ArrowUpRight size={16}/></a><button className="icon-button menu-toggle" onClick={()=>setMenu(!menu)} aria-label={t.menu} aria-expanded={menu}>{menu?<X/>:<Menu/>}</button></div></header>{menu&&<nav className="mobile-menu" aria-label="Mobile navigation">{t.nav.map((n,i)=><a onClick={()=>setMenu(false)} key={ids[i]} href={'#'+ids[i]}>{n}<ArrowUpRight size={18}/></a>)}</nav>}
-<main><section id="home" className="hero"><div className="hero-slides" aria-hidden="true">{heroImages.map((img,i)=><div key={img} className={`hero-photo hero-slide ${i===heroSlide?'is-active':''}`} style={{backgroundImage:`linear-gradient(90deg,rgba(2,7,16,.97) 0%,rgba(3,11,24,.84) 28%,rgba(4,10,20,.20) 70%,rgba(2,7,16,.48) 100%),url('${img}')`}}/>)}</div><div className="hero-cinematic-bars"/><div className="motion-bg" aria-hidden="true"><i className="motion-orb orb-a"/><i className="motion-orb orb-b"/><i className="motion-orb orb-c"/><i className="motion-beam"/></div><div className="hero-noise"/><div className="hero-grid container"><div className="hero-content"><p className="eyebrow"><span className="signal-dot"/>{t.eyebrow}</p><h1>{t.hero1}<br/><em>{t.hero2}</em></h1><p className="hero-description">{t.heroText}</p><div className="hero-actions"><a className="glow-button shimmer-button" href="#contact"><span className="button-shimmer" aria-hidden="true"/>{t.start}<span className="arrow-disc"><ArrowUpRight size={21}/></span></a><a className="text-link" href="#portfolio">{t.explore}<ArrowUpRight size={18}/></a></div></div><div className="hero-side"><span>ALASSMAA / CREATIVE STUDIO</span><span>25°24′ N · 55°29′ E</span></div></div><a className="scroll-prompt" href="#about"><ArrowDown size={16}/>{t.scroll}</a><div className="hero-index">0{heroSlide+1} <span>/ 05</span></div><div className="hero-progress">{heroImages.map((_,i)=><button key={i} className={i===heroSlide?'active':''} onClick={()=>setHeroSlide(i)} aria-label={`Hero ${i+1}`}><i/></button>)}</div></section>
-<section className="impact-strip" aria-label="Alassmaa Media highlights"><div className="container impact-grid"><div><strong>100+</strong><span>{lang==='ar'?'عميل وشريك':'Clients & Partners'}</span></div><div><strong>500+</strong><span>{lang==='ar'?'مشروع ومحتوى':'Projects & Content'}</span></div><div><strong>8+</strong><span>{lang==='ar'?'سنوات خبرة إبداعية':'Years Creative Experience'}</span></div><div><strong>UAE</strong><span>{lang==='ar'?'من عجمان إلى الإمارات':'Ajman · United Arab Emirates'}</span></div></div></section>
-<section id="about" className="section about-section container"><div className="section-kicker">{t.aboutTag}</div><div><h2>{t.aboutHead}</h2><p className="section-lead">{t.aboutText}</p><a className="under-link" href="#services">{t.servicesTag}<ArrowUpRight size={18}/></a></div><div className="about-symbol" aria-hidden="true">A<span>✳</span>M</div></section>
-<section id="services" className="section services-section"><div className="container"><div className="section-top"><p className="section-kicker">{t.servicesTag}</p><div><h2>{t.servicesHead}</h2><p className="muted">{t.servicesText}</p></div></div><div className="service-grid">{t.services.map((s,i)=><a href="#contact" className="service-card" key={s}><span className="service-num">{String(i+1).padStart(2,'0')} / 08</span><div className="service-icon">{i%2?<Camera size={25}/>:<Video size={25}/>}</div><h3>{s}</h3><p>{t.serviceDesc[i]}</p><ArrowUpRight className="service-arrow" size={21}/></a>)}</div></div></section>
-<section id="portfolio" className="section work-section container"><div className="section-top"><p className="section-kicker">{t.workTag}</p><div><h2>{t.workHead}</h2><p className="muted">{t.workText}</p></div></div><div className="featured-grid">{projects.slice(0,3).map((p,i)=><button key={p.title} className={'featured-card featured-'+i} onClick={()=>setSelected(i)}><span className="project-image" style={{backgroundImage:`url('${p.image}')`}}/><span className="project-sample">{t.sample}</span><span className="featured-caption"><span><small>{p.category.toUpperCase()}</small><strong>{lang==='ar'?p.ar:p.title}</strong></span><span className="round-arrow"><ArrowUpRight size={22}/></span></span></button>)}</div></section>
-<section id="media-wall" className="section wall-section"><div className="container"><div className="section-top"><p className="section-kicker">{t.wallTag}</p><div><h2>{t.wallHead}</h2><p className="muted">{t.wallText}</p></div></div><div className="filter-bar" role="group" aria-label="Project categories">{t.filters.map((f,i)=>{const value=['All','Film','Campaigns','Photography','Branding','Social'][i];return <button key={value} className={filter===value?'active':''} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{f}</button>})}</div><div className="wall-grid">{projects.map((p,i)=>((filter==='All'||filter===p.category)&&<button className="wall-card magnetic-card" key={p.title} onClick={()=>setSelected(i)}><span className="wall-image" style={{backgroundImage:`url('${p.image}')`}}/><span className="wall-caption"><span><small>{p.category.toUpperCase()} · {t.sample}</small><strong>{lang==='ar'?p.ar:p.title}</strong></span><ArrowUpRight size={20}/></span></button>))}</div></div></section>
-<section className="section insights-section container"><div className="section-top"><p className="section-kicker">{t.insightsTag}</p><div><h2>{t.insightsHead}</h2></div></div><div className="insight-grid"><div><span>01 / STORYTELLING</span><h3>{t.insight1}</h3><div className="insight-line"/></div><div><span>02 / DESIGN</span><h3>{t.insight2}</h3><div className="insight-line"/></div></div></section>
-<section className="approach-section"><div className="container"><p className="section-kicker">{t.clientsTag}</p><h2>{t.clientsHead}</h2><div className="steps">{t.steps.map((s,i)=><div key={s}><span>0{i+1}</span><strong>{s}</strong><ArrowUpRight size={19}/></div>)}</div></div></section>
-<section id="contact" className="section contact-section container"><div><p className="section-kicker">{t.contactTag}</p><h2>{t.contactHead}</h2><p className="section-lead">{t.contactText}</p><a className="contact-mail" href={`mailto:${contact}`}>{contact}<ArrowUpRight size={22}/></a></div><form onSubmit={submit}><div className="form-row"><label>{t.name}<input name="name" required autoComplete="name"/></label><label>{t.email}<input name="email" type="email" required autoComplete="email"/></label></div><div className="form-row"><label>{t.service}<select name="service" required defaultValue=""><option value="" disabled>{t.service}</option>{t.services.map(s=><option key={s}>{s}</option>)}</select></label><label>{t.budget}<select name="budget" defaultValue=""><option value="">—</option><option>AED 2,000–5,000</option><option>AED 5,000–15,000</option><option>AED 15,000+</option></select></label></div><label>{t.message}<textarea name="message" rows={3} required/></label><button type="submit" className="glow-button">{t.submit}<span className="arrow-disc"><ArrowUpRight size={21}/></span></button><small className="form-note">{t.mailFallback}</small></form></section></main>
-<footer className="footer"><div className="container"><div className="footer-main"><div><a className="brand footer-brand" href="#home"><img className="logo-transparent" src="/logo-transparent.png" alt="العصماء إعلام — Alassmaa Media"/></a><p>{t.footer}</p><p className="muted">{t.location}</p></div><div className="footer-links">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</div><div className="footer-contact"><a href={`mailto:${contact}`}>{contact}<ArrowUpRight size={16}/></a><span>AJMAN · UAE</span></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA. {t.rights}</span><div><a href="https://www.instagram.com/" aria-label="Instagram" target="_blank" rel="noreferrer"><Instagram size={19}/></a><a href={`mailto:${contact}`} aria-label="Email"><Mail size={19}/></a></div><a href="#home">BACK TO TOP ↑</a></div></div></footer>
-<div className="contact-floaters" aria-label={lang==='ar'?'تواصل سريع':'Quick contact'}>
-<a className={`contact-floater whatsapp-floater ${!wa?'is-unset':''}`} href={wa?`https://wa.me/${wa}?text=${encodeURIComponent(lang==='ar'?'مرحباً، أود الاستفسار عن خدمات العصماء إعلام':'Hello, I would like to enquire about Alassmaa Media services')}`:'#contact'} target={wa?'_blank':undefined} rel={wa?'noreferrer':undefined} aria-label={t.whatsapp}>
-<span className="floater-label"><span>{lang==='ar'?'راسلنا عبر واتساب • نرد عليك سريعاً':'Message us on WhatsApp • Let’s create something great'}</span></span>
-<span className="floater-icon"><svg viewBox="0 0 24 24" width="25" height="25" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.9 11.9 0 0 0 12.03 0C5.42 0 .03 5.38.03 12c0 2.1.55 4.15 1.6 5.95L0 24l6.2-1.63A11.96 11.96 0 0 0 12.03 24c6.61 0 12-5.38 12-12 0-3.2-1.25-6.21-3.51-8.52ZM12.03 21.97a9.9 9.9 0 0 1-5.06-1.38l-.36-.21-3.68.96.98-3.58-.23-.37A9.9 9.9 0 0 1 2.06 12c0-5.5 4.47-9.97 9.97-9.97 2.66 0 5.16 1.04 7.04 2.92A9.9 9.9 0 0 1 22 12c0 5.5-4.47 9.97-9.97 9.97Zm5.47-7.47c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.62-.92-2.22-.24-.58-.48-.5-.67-.51h-.57c-.2 0-.52.08-.79.38-.27.3-1.04 1.02-1.04 2.49s1.06 2.9 1.21 3.1c.15.2 2.1 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.77-.73 2.02-1.44.25-.72.25-1.33.17-1.45-.08-.12-.27-.2-.57-.35Z"/></svg></span></a>
-<a className={`contact-floater call-floater ${!phone?'is-unset':''}`} href={phone?`tel:${phone}`:'#contact'} aria-label={lang==='ar'?'اتصل بنا':'Call us'}>
-<span className="floater-label"><span>{lang==='ar'?'اتصل بنا الآن • نحن جاهزون لمشروعك':'Call us now • We’re ready for your project'}</span></span>
-<span className="floater-icon"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92z"/></svg></span></a>
-</div>
-{selected!==null&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null)}}><div className="case-modal" role="dialog" aria-modal="true" aria-label={lang==='ar'?projects[selected].ar:projects[selected].title}><button className="modal-close" onClick={()=>setSelected(null)} aria-label={t.close}><X/></button><div className="case-image" style={{backgroundImage:`url('${projects[selected].image}')`}}/><div className="case-content"><span className="section-kicker">{projects[selected].category.toUpperCase()} · {t.sample}</span><h2>{lang==='ar'?projects[selected].ar:projects[selected].title}</h2><p>{projects[selected].desc}</p><button className="under-link" onClick={()=>setSelected((selected+1)%projects.length)}>{t.next}<ArrowUpRight size={18}/></button></div></div></div>}</>}
+import {useEffect,useMemo,useRef,useState} from 'react';
+import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,Thumbnails,X,ZoomIn,ZoomOut} from 'lucide-react';
+
+type Lang='ar'|'en';
+type Theme='dark'|'light';
+
+const ISSUE={
+  titleAr:'أمان',titleEn:'AMAN',issueAr:'العدد 0',issueEn:'Issue 0',year:'2026',
+  cover:'/magazines/aman-issue-0/cover.webp',pdf:'/magazines/aman-issue-0/aman-issue-0.pdf',pages:23,
+};
+
+const toc=[
+  {page:5,ar:'زايد... مهندس الدولة المؤسسية',en:'Zayed — Architect of the Institutional State'},
+  {page:8,ar:'هندسة الأمن في «دبي الخمسين»',en:'Security Engineering in “Dubai 50”'},
+  {page:10,ar:'الحس الأمني: قراءة الجريمة قبل وقوعها',en:'Security Sense: Reading Crime Before It Happens'},
+  {page:12,ar:'الكفاءات التي لا تعوض',en:'The Irreplaceable Competencies'},
+  {page:14,ar:'الذكاء الاصطناعي والتحولات الحديثة',en:'AI and Modern Transformations'},
+  {page:18,ar:'القانون ببساطة',en:'Law, Simply Explained'},
+];
+
+const copy={
+  ar:{
+    nav:['الرئيسية','العدد الحالي','الأعداد السابقة','أبواب المجلة','الإعلان معنا','تواصل معنا'],
+    latest:'أحدث إصدار',heroTitle:'مجلة أمان',heroText:'مجلة شهرية قانونية، إدارية، أمنية، مجتمعية وثقافية. معرفة تعزز الوعي وتجمع الخبرة بالمستقبل.',
+    read:'اقرأ العدد',download:'تحميل PDF',archive:'استكشف الأعداد',scroll:'اكتشف المجلة',
+    currentTag:'العدد الحالي',currentTitle:'مساحة معرفية مهنية بروح إماراتية',currentText:'هذا الإصدار يجمع موضوعات في القيادة، القانون، الأمن، الإدارة، الذكاء الاصطناعي وقصص النجاح في تجربة تحريرية حديثة.',
+    pages:'صفحة',monthly:'مجلة شهرية',categories:'قانون · إدارة · أمن · مجتمع · ثقافة',
+    sectionsTag:'أبواب العدد',sectionsTitle:'انتقل مباشرة إلى الموضوع الذي يهمك',
+    archiveTag:'أرشيف المجلة',archiveTitle:'كل عدد يبقى جزءاً من الذاكرة',archiveText:'عند نشر إصدار جديد، ينتقل الإصدار السابق تلقائياً إلى هنا ليظل متاحاً للقراءة والتحميل.',
+    advertiseTag:'الإعلان والشراكات',advertiseTitle:'ضع علامتك داخل تجربة تحريرية مميزة',advertiseText:'فرص للإعلانات، الرعاية، الشراكات والمحتوى المؤسسي. تواصل معنا للحصول على الباقة الإعلامية.',advertise:'اطلب الباقة الإعلامية',
+    contactTag:'تواصل معنا',contactTitle:'لديك فكرة أو مشاركة أو إعلان؟',contactText:'نسعد باستقبال المساهمات والشراكات والاستفسارات.',
+    footer:'منصة معرفية تصنع الوعي وتوثق الخبرة.',rights:'جميع الحقوق محفوظة.',language:'تغيير اللغة',theme:'تغيير السمة',
+    reader:'قارئ المجلة',contents:'المحتويات',close:'إغلاق',fullscreen:'ملء الشاشة',thumbs:'الصفحات',share:'مشاركة',zoom:'تكبير',
+    prev:'السابق',next:'التالي',openIssue:'فتح العدد',coming:'إصدار جديد قريباً',
+  },
+  en:{
+    nav:['Home','Current Issue','Archive','Sections','Advertise','Contact'],
+    latest:'LATEST ISSUE',heroTitle:'AMAN Magazine',heroText:'A monthly professional publication spanning law, administration, security, society and culture — knowledge that strengthens awareness.',
+    read:'Read Issue',download:'Download PDF',archive:'Browse Archive',scroll:'Discover the magazine',
+    currentTag:'CURRENT ISSUE',currentTitle:'A professional knowledge platform with an Emirati identity',currentText:'This issue brings together leadership, law, security, management, artificial intelligence and success stories in a modern editorial experience.',
+    pages:'Pages',monthly:'Monthly magazine',categories:'Law · Management · Security · Society · Culture',
+    sectionsTag:'INSIDE THIS ISSUE',sectionsTitle:'Jump directly to what matters to you',
+    archiveTag:'MAGAZINE ARCHIVE',archiveTitle:'Every issue becomes part of the record',archiveText:'When a new issue is published, the previous one moves here automatically and remains available to read and download.',
+    advertiseTag:'ADVERTISING & PARTNERSHIPS',advertiseTitle:'Put your brand inside a premium editorial experience',advertiseText:'Advertising, sponsorship, partnerships and institutional content opportunities. Contact us for the media kit.',advertise:'Request Media Kit',
+    contactTag:'CONTACT',contactTitle:'Have a story, contribution or advertising enquiry?',contactText:'We welcome editorial contributions, partnerships and enquiries.',
+    footer:'A knowledge platform that builds awareness and documents experience.',rights:'All rights reserved.',language:'Switch language',theme:'Toggle theme',
+    reader:'Magazine reader',contents:'Contents',close:'Close',fullscreen:'Fullscreen',thumbs:'Pages',share:'Share',zoom:'Zoom',
+    prev:'Previous',next:'Next',openIssue:'Open issue',coming:'New issue coming soon',
+  }
+};
+
+function PdfPage({pdf,page,zoom=1}:{pdf:any,page:number,zoom?:number}){
+  const ref=useRef<HTMLCanvasElement|null>(null);
+  useEffect(()=>{
+    let cancelled=false;
+    if(!pdf||!ref.current||page<1||page>ISSUE.pages)return;
+    (async()=>{
+      const pg=await pdf.getPage(page);if(cancelled)return;
+      const viewport=pg.getViewport({scale:1.15*zoom});
+      const canvas=ref.current!;const ctx=canvas.getContext('2d');if(!ctx)return;
+      canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
+      await pg.render({canvasContext:ctx,viewport}).promise;
+    })();
+    return()=>{cancelled=true};
+  },[pdf,page,zoom]);
+  return <canvas ref={ref} className="pdf-canvas" aria-label={'Page '+page}/>;
+}
+
+function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
+  const t=copy[lang];
+  const [pdf,setPdf]=useState<any>(null);
+  const [page,setPage]=useState(1);
+  const [zoom,setZoom]=useState(1);
+  const [drawer,setDrawer]=useState<'toc'|'thumbs'|null>(null);
+  const [flip,setFlip]=useState<'next'|'prev'|null>(null);
+  const [error,setError]=useState('');
+  const shell=useRef<HTMLDivElement|null>(null);
+  const rtl=lang==='ar';
+  const mobile=typeof window!=='undefined'&&window.innerWidth<820;
+  const step=mobile?1:2;
+
+  useEffect(()=>{
+    document.body.style.overflow='hidden';
+    const load=()=>{
+      const lib=(window as any).pdfjsLib;
+      if(!lib)return;
+      lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      lib.getDocument(ISSUE.pdf).promise.then((doc:any)=>setPdf(doc)).catch(()=>setError(lang==='ar'?'تعذر تحميل ملف المجلة. تأكد من رفع ملف PDF.':'Could not load the magazine PDF. Please confirm the PDF is uploaded.'));
+    };
+    if((window as any).pdfjsLib){load();return()=>{document.body.style.overflow=''}}
+    const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.async=true;s.onload=load;s.onerror=()=>setError('PDF reader library failed to load.');document.head.appendChild(s);
+    return()=>{document.body.style.overflow=''};
+  },[lang]);
+
+  function animate(dir:'next'|'prev',target:number){if(target<1||target>ISSUE.pages)return;setFlip(dir);window.setTimeout(()=>{setPage(target);setFlip(null)},310)}
+  function goNext(){animate('next',Math.min(ISSUE.pages,page+step))}
+  function goPrev(){animate('prev',Math.max(1,page-step))}
+
+  useEffect(()=>{
+    const key=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose();if(e.key==='ArrowRight')rtl?goPrev():goNext();if(e.key==='ArrowLeft')rtl?goNext():goPrev();};
+    window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);
+  });
+
+  async function full(){try{if(!document.fullscreenElement)await shell.current?.requestFullscreen();else await document.exitFullscreen()}catch{}}
+  async function share(){try{if(navigator.share)await navigator.share({title:'AMAN Magazine',url:window.location.href});else await navigator.clipboard.writeText(window.location.href)}catch{}}
+  function jump(p:number){setPage(Math.max(1,Math.min(ISSUE.pages,p)));setDrawer(null)}
+
+  return <div className="reader-overlay" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
+    <header className="reader-toolbar">
+      <div className="reader-title"><img src="/logo-emblem.png" alt=""/><span><b>{t.reader}</b><small>{ISSUE.issueAr} · {ISSUE.year}</small></span></div>
+      <div className="reader-actions">
+        <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
+        <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><Thumbnails size={18}/><span>{t.thumbs}</span></button>
+        <button onClick={()=>setZoom(v=>Math.min(1.5,v+.15))} title={t.zoom}><ZoomIn size={18}/></button>
+        <button onClick={()=>setZoom(v=>Math.max(.75,v-.15))} title={t.zoom}><ZoomOut size={18}/></button>
+        <button onClick={share} title={t.share}><Share2 size={18}/></button>
+        <a href={ISSUE.pdf} download title={t.download}><Download size={18}/></a>
+        <button onClick={full} title={t.fullscreen}><Maximize2 size={18}/></button>
+        <button className="reader-close" onClick={onClose} title={t.close}><X size={20}/></button>
+      </div>
+    </header>
+
+    {drawer&&<aside className="reader-drawer">
+      <div className="drawer-head"><strong>{drawer==='toc'?t.contents:t.thumbs}</strong><button onClick={()=>setDrawer(null)}><X size={18}/></button></div>
+      {drawer==='toc'?<div className="toc-list">{toc.map(item=><button key={item.page} onClick={()=>jump(item.page)}><span>{String(item.page).padStart(2,'0')}</span><b>{lang==='ar'?item.ar:item.en}</b></button>)}</div>:
+      <div className="thumb-grid">{Array.from({length:ISSUE.pages},(_,i)=><button key={i} onClick={()=>jump(i+1)} className={page===i+1?'active':''}><span>{String(i+1).padStart(2,'0')}</span></button>)}</div>}
+    </aside>}
+
+    <main className="reader-stage">
+      {error?<div className="reader-error"><BookOpen size={42}/><p>{error}</p><a href={ISSUE.pdf} target="_blank" rel="noreferrer">{t.download}</a></div>:
+      !pdf?<div className="reader-loading"><i/><span>{lang==='ar'?'جارٍ تجهيز الصفحات...':'Preparing pages...'}</span></div>:
+      <div className={'book-shell '+(flip?'flip-'+flip:'')+' '+(page===1?'cover-state':'')}>
+        <div className="book-glow"/>
+        <div className="page-sheet page-a"><PdfPage pdf={pdf} page={page} zoom={zoom}/><span className="page-number">{page}</span></div>
+        {!mobile&&page<ISSUE.pages&&<div className="page-sheet page-b"><PdfPage pdf={pdf} page={page+1} zoom={zoom}/><span className="page-number">{page+1}</span></div>}
+      </div>}
+    </main>
+
+    <footer className="reader-footer">
+      <button onClick={rtl?goNext:goPrev} disabled={page<=1}><ChevronLeft size={22}/><span>{t.prev}</span></button>
+      <div className="reader-progress"><span>{String(page).padStart(2,'0')}</span><i><b style={{width:((page/ISSUE.pages)*100)+'%'}}/></i><span>{ISSUE.pages}</span></div>
+      <button onClick={rtl?goPrev:goNext} disabled={page>=ISSUE.pages}><span>{t.next}</span><ChevronRight size={22}/></button>
+    </footer>
+  </div>
+}
+
+export default function Home(){
+  const [lang,setLang]=useState<Lang>('ar');const [theme,setTheme]=useState<Theme>('dark');const [menu,setMenu]=useState(false);const [reader,setReader]=useState(false);const [loading,setLoading]=useState(true);
+  const t=copy[lang];const wa=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||'971555470136';const phone=process.env.NEXT_PUBLIC_PHONE_NUMBER||'+971555470136';const contact=process.env.NEXT_PUBLIC_CONTACT_EMAIL||'alasmaamedia@gmail.com';
+  const ids=['home','current','archive','sections','advertise','contact'];
+  useEffect(()=>{const saved=localStorage.getItem('alassmaa-theme') as Theme|null;const l=localStorage.getItem('alassmaa-lang') as Lang|null;if(saved)setTheme(saved);if(l)setLang(l);const timer=window.setTimeout(()=>setLoading(false),1900);return()=>window.clearTimeout(timer)},[]);
+  useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
+  const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(90deg,rgba(12,2,18,.96),rgba(35,6,50,.76) 43%,rgba(20,5,24,.25) 75%,rgba(5,1,9,.72)),url('"+ISSUE.cover+"')"}),[]);
+  return <>
+    {loading&&<div className="cinema-loader"><div className="loader-halo"/><img src="/logo-emblem.png" alt="Alassmaa Media"/><span>ALASSMAA MEDIA</span><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
+    <header className="site-header">
+      <a className="brand" href="#home"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/></a>
+      <nav className="desktop-nav">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav>
+      <div className="header-actions">
+        <button className="round-control" onClick={()=>setTheme(theme==='dark'?'light':'dark')} title={t.theme}>{theme==='dark'?<Sun size={18}/>:<Moon size={18}/>}</button>
+        <button className="lang-control" onClick={()=>setLang(lang==='ar'?'en':'ar')}><Globe2 size={17}/>{lang==='ar'?'EN':'العربية'}</button>
+        <button className="gold-cta" onClick={()=>setReader(true)}><BookOpen size={17}/>{t.read}</button>
+        <button className="round-control menu-toggle" onClick={()=>setMenu(!menu)}><Menu size={20}/></button>
+      </div>
+    </header>
+    {menu&&<nav className="mobile-menu">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]} onClick={()=>setMenu(false)}>{n}<ArrowUpRight size={17}/></a>)}</nav>}
+
+    <main>
+      <section id="home" className="mag-hero" style={heroStyle}>
+        <div className="hero-grain"/><div className="hero-purple-orb"/><div className="hero-gold-beam"/>
+        <div className="container hero-layout">
+          <div className="hero-copy">
+            <span className="eyebrow"><i/>{t.latest} · {ISSUE.issueAr} · {ISSUE.year}</span>
+            <h1>{t.heroTitle}</h1><p>{t.heroText}</p>
+            <div className="hero-actions">
+              <button className="primary-cta" onClick={()=>setReader(true)}><BookOpen size={20}/>{t.read}<ArrowUpRight size={18}/></button>
+              <a className="secondary-cta" href={ISSUE.pdf} download><Download size={19}/>{t.download}</a>
+              <a className="text-cta" href="#archive">{t.archive}<ArrowDown size={17}/></a>
+            </div>
+            <div className="issue-meta"><span><b>{ISSUE.pages}</b>{t.pages}</span><span><b>01</b>{t.monthly}</span><span><b>UAE</b>{t.categories}</span></div>
+          </div>
+          <button className="hero-cover" onClick={()=>setReader(true)} aria-label={t.read}><img src={ISSUE.cover} alt="غلاف مجلة أمان"/><span className="cover-badge">{t.read}<ArrowUpRight size={18}/></span></button>
+        </div>
+        <a className="scroll-prompt" href="#current"><ArrowDown size={16}/>{t.scroll}</a>
+      </section>
+
+      <section id="current" className="section current-section"><div className="container current-grid">
+        <div className="current-cover"><div className="cover-frame"><img src={ISSUE.cover} alt="AMAN magazine current issue"/><button onClick={()=>setReader(true)}><BookOpen size={22}/>{t.openIssue}</button></div></div>
+        <div className="current-copy"><span className="section-kicker">01 / {t.currentTag}</span><h2>{t.currentTitle}</h2><p>{t.currentText}</p>
+          <div className="current-stats"><div><strong>{ISSUE.pages}</strong><span>{t.pages}</span></div><div><strong>{ISSUE.issueAr}</strong><span>{ISSUE.year}</span></div><div><strong>5</strong><span>{lang==='ar'?'مجالات معرفية':'Knowledge fields'}</span></div></div>
+          <div className="hero-actions"><button className="primary-cta" onClick={()=>setReader(true)}><BookOpen size={19}/>{t.read}</button><a className="secondary-cta" href={ISSUE.pdf} download><Download size={18}/>{t.download}</a></div>
+        </div>
+      </div></section>
+
+      <section id="sections" className="section issue-sections"><div className="container"><div className="section-head"><span className="section-kicker">02 / {t.sectionsTag}</span><h2>{t.sectionsTitle}</h2></div>
+        <div className="topic-grid">{toc.map((item,i)=><button key={item.page} className="topic-card" onClick={()=>setReader(true)}><span className="topic-index">0{i+1}</span><div><small>{lang==='ar'?'صفحة':'PAGE'} {item.page}</small><h3>{lang==='ar'?item.ar:item.en}</h3></div><ArrowUpRight size={21}/></button>)}</div>
+      </div></section>
+
+      <section id="archive" className="section archive-section"><div className="container"><div className="section-head split"><div><span className="section-kicker">03 / {t.archiveTag}</span><h2>{t.archiveTitle}</h2></div><p>{t.archiveText}</p></div>
+        <div className="archive-grid"><article className="issue-card featured"><div className="issue-card-cover"><img src={ISSUE.cover} alt="AMAN Issue 0"/><span>{t.latest}</span></div><div><small>{ISSUE.issueAr} · {ISSUE.year}</small><h3>{lang==='ar'?'مجلة أمان — الإصدار الحالي':'AMAN Magazine — Current Issue'}</h3><button onClick={()=>setReader(true)}>{t.read}<ArrowUpRight size={17}/></button></div></article>
+        {[1,2].map(n=><article className="issue-card placeholder" key={n}><div className="placeholder-mark"><img src="/logo-emblem.png" alt=""/></div><div><small>{lang==='ar'?'الأرشيف جاهز للإصدار القادم':'ARCHIVE READY'}</small><h3>{t.coming}</h3></div></article>)}</div>
+      </div></section>
+
+      <section id="advertise" className="advertise-section"><div className="container advertise-grid"><div><span className="section-kicker">04 / {t.advertiseTag}</span><h2>{t.advertiseTitle}</h2><p>{t.advertiseText}</p><a className="primary-cta" href={'https://wa.me/'+wa+'?text='+encodeURIComponent(lang==='ar'?'مرحباً، أود الحصول على الباقة الإعلامية والإعلانية لمجلة أمان.':'Hello, I would like the AMAN Magazine advertising media kit.')} target="_blank" rel="noreferrer">{t.advertise}<ArrowUpRight size={19}/></a></div><div className="ad-visual"><span>AMAN</span><b>MEDIA KIT</b><i/></div></div></section>
+
+      <section id="contact" className="section contact-section"><div className="container contact-grid"><div><span className="section-kicker">05 / {t.contactTag}</span><h2>{t.contactTitle}</h2><p>{t.contactText}</p></div><div className="contact-links"><a href={'mailto:'+contact}><Mail size={20}/><span>{contact}</span><ArrowUpRight size={18}/></a><a href={'tel:'+phone}><span>☎</span><b>{phone}</b><ArrowUpRight size={18}/></a></div></div></section>
+    </main>
+
+    <footer className="footer"><div className="container footer-grid"><div><img src="/logo-transparent.png" alt="Alassmaa Media"/><p>{t.footer}</p></div><nav>{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav><div className="footer-social"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={19}/>Instagram</a><a href={'mailto:'+contact}><Mail size={19}/>{contact}</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA LLC. {t.rights}</span><a href="#home">↑ TOP</a></div></footer>
+
+    <div className="contact-floaters"><a className="float wa" href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" aria-label="WhatsApp"><span>◉</span></a><a className="float call" href={'tel:'+phone} aria-label="Call"><span>☎</span></a></div>
+    {reader&&<MagazineReader lang={lang} onClose={()=>setReader(false)}/>}
+  </>;
+}
