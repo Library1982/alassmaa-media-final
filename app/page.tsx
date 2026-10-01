@@ -272,7 +272,23 @@ export default function Home(){
 
     <footer className="footer"><div className="container footer-grid"><div><div className="footer-original-logo"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/></div><p>{t.footer}</p></div><nav>{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav><div className="footer-social"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={19}/>Instagram</a><a href={'mailto:'+contact}><Mail size={19}/>{contact}</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA LLC. {t.rights}</span><a href="#home">↑ TOP</a></div></footer>
 
-    <div className="contact-floaters"><a className="float wa" href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" aria-label="WhatsApp"><svg className="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16.04 3C8.86 3 3.02 8.78 3.02 15.9c0 2.27.6 4.48 1.75 6.42L3 29l6.9-1.78a13.1 13.1 0 0 0 6.13 1.55h.01c7.18 0 13.02-5.78 13.02-12.9C29.06 8.78 23.22 3 16.04 3Zm0 23.6h-.01a10.9 10.9 0 0 1-5.56-1.52l-.4-.24-4.1 1.06 1.1-3.98-.26-.41a10.67 10.67 0 0 1-1.66-5.61c0-5.93 4.89-10.75 10.9-10.75 6 0 10.88 4.82 10.88 10.75 0 5.92-4.88 10.74-10.89 10.74Zm5.97-8.03c-.33-.16-1.94-.95-2.24-1.05-.3-.11-.52-.16-.74.16-.22.32-.85 1.05-1.04 1.27-.19.21-.38.24-.71.08-.33-.16-1.38-.5-2.63-1.6-.97-.86-1.63-1.92-1.82-2.24-.19-.32-.02-.5.14-.66.15-.14.33-.38.49-.57.16-.19.22-.32.33-.54.11-.21.05-.4-.03-.56-.08-.16-.74-1.76-1.01-2.41-.27-.64-.54-.55-.74-.56h-.63c-.22 0-.57.08-.87.4-.3.32-1.15 1.11-1.15 2.7 0 1.59 1.18 3.12 1.34 3.34.16.21 2.32 3.5 5.62 4.9.78.34 1.39.54 1.87.69.79.25 1.5.21 2.06.13.63-.09 1.94-.78 2.22-1.53.27-.75.27-1.4.19-1.53-.08-.13-.3-.21-.63-.37Z"/></svg></a><a className="float call" href={'tel:'+phone} aria-label="Call"><span>☎</span></a></div>
+    <div className="contact-floaters" aria-label={lang==='ar'?'تواصل سريع':'Quick contact'}>
+      <a className="contact-floater whatsapp-floater" href={'https://wa.me/'+wa+'?text='+encodeURIComponent(lang==='ar'?'مرحباً، أود الاستفسار عن خدمات مجلة أمان والعصماء الإعلامية.':'Hello, I would like to enquire about AMAN Magazine and Alassmaa Media services.')} target="_blank" rel="noreferrer" aria-label="WhatsApp">
+        <span className="floater-label"><span>{lang==='ar'?'راسلنا عبر واتساب • نرد عليك سريعاً':'Message us on WhatsApp • We reply quickly'}</span></span>
+        <span className="floater-icon">
+          <svg className="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16.04 3C8.86 3 3.02 8.78 3.02 15.9c0 2.27.6 4.48 1.75 6.42L3 29l6.9-1.78a13.1 13.1 0 0 0 6.13 1.55h.01c7.18 0 13.02-5.78 13.02-12.9C29.06 8.78 23.22 3 16.04 3Zm0 23.6h-.01a10.9 10.9 0 0 1-5.56-1.52l-.4-.24-4.1 1.06 1.1-3.98-.26-.41a10.67 10.67 0 0 1-1.66-5.61c0-5.93 4.89-10.75 10.9-10.75 6 0 10.88 4.82 10.88 10.75 0 5.92-4.88 10.74-10.89 10.74Zm5.97-8.03c-.33-.16-1.94-.95-2.24-1.05-.3-.11-.52-.16-.74.16-.22.32-.85 1.05-1.04 1.27-.19.21-.38.24-.71.08-.33-.16-1.38-.5-2.63-1.6-.97-.86-1.63-1.92-1.82-2.24-.19-.32-.02-.5.14-.66.15-.14.33-.38.49-.57.16-.19.22-.32.33-.54.11-.21.05-.4-.03-.56-.08-.16-.74-1.76-1.01-2.41-.27-.64-.54-.55-.74-.56h-.63c-.22 0-.57.08-.87.4-.3.32-1.15 1.11-1.15 2.7 0 1.59 1.18 3.12 1.34 3.34.16.21 2.32 3.5 5.62 4.9.78.34 1.39.54 1.87.69.79.25 1.5.21 2.06.13.63-.09 1.94-.78 2.22-1.53.27-.75.27-1.4.19-1.53-.08-.13-.3-.21-.63-.37Z"/></svg>
+        </span>
+      </a>
+      <a className="contact-floater call-floater" href={'tel:'+phone} aria-label={lang==='ar'?'اتصل بنا':'Call us'}>
+        <span className="floater-label"><span>{lang==='ar'?'اتصل بنا الآن • نحن جاهزون لمساعدتك':'Call us now • We’re ready to help'}</span></span>
+        <span className="floater-icon">
+          <svg className="call-red-svg" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="currentColor" strokeWidth="4.5"/>
+            <path d="M25.8 21.5c1.2-1.2 3.1-1.2 4.3 0l3.3 3.3c1.2 1.2 1.2 3.1 0 4.3l-2.4 2.4c2.4 4.1 5.9 7.5 10 10l2.4-2.4c1.2-1.2 3.1-1.2 4.3 0l3.3 3.3c1.2 1.2 1.2 3.1 0 4.3l-1.9 1.9c-1.9 1.9-4.8 2.4-7.2 1.2-5.7-2.7-10.7-6.7-14.6-11.6-3.2-4-5.8-8.5-7.3-13.3-.7-2.2-.1-4.5 1.5-6.1l1.3-1.3Z" fill="currentColor"/>
+          </svg>
+        </span>
+      </a>
+    </div>
     {reader&&(externalReader?<ExternalMagazineReader lang={lang} url={externalReader} onClose={()=>setReader(false)}/>:<MagazineReader lang={lang} onClose={()=>setReader(false)}/>)}
   </>;
 }
