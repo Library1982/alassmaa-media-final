@@ -216,7 +216,7 @@ export default function Home(){
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
   const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(100deg,rgba(12,2,18,.98),rgba(35,6,50,.90) 48%,rgba(18,5,24,.78) 100%)"}),[]);
   return <>
-    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="single-logo-loader"><img className="loader-original-logo" src="/logo-transparent.png" alt="Alassmaa Media"/><span className="loader-sheen" aria-hidden="true"/></div><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
+    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="orbit-wrap main-orbit single-orbit-loader"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt="Alassmaa Media"/></div><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
     <header className="site-header">
       <a className="brand brand-original" href="#home"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/><span className="brand-sheen" aria-hidden="true"/></a>
       <nav className="desktop-nav">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav>
