@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,X,ZoomIn,ZoomOut} from 'lucide-react';
+import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,Volume2,VolumeX,X,ZoomIn,ZoomOut} from 'lucide-react';
 
 type Lang='ar'|'en';
 type Theme='dark'|'light';
@@ -51,70 +51,111 @@ const copy={
   }
 };
 
-function PdfPage({pdf,page,zoom=1}:{pdf:any,page:number,zoom?:number}){
-  const ref=useRef<HTMLCanvasElement|null>(null);
-  useEffect(()=>{
-    let cancelled=false;
-    if(!pdf||!ref.current||page<1||page>ISSUE.pages)return;
-    (async()=>{
-      const pg=await pdf.getPage(page);if(cancelled)return;
-      const viewport=pg.getViewport({scale:1.15*zoom});
-      const canvas=ref.current!;const ctx=canvas.getContext('2d');if(!ctx)return;
-      canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
-      await pg.render({canvasContext:ctx,viewport}).promise;
-    })();
-    return()=>{cancelled=true};
-  },[pdf,page,zoom]);
-  return <canvas ref={ref} className="pdf-canvas" aria-label={'Page '+page}/>;
-}
-
 function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
   const t=copy[lang];
-  const [pdf,setPdf]=useState<any>(null);
+  const shell=useRef<HTMLDivElement|null>(null);
+  const bookHost=useRef<HTMLDivElement|null>(null);
+  const flipRef=useRef<any>(null);
+  const pdfRef=useRef<any>(null);
+  const [images,setImages]=useState<string[]>([]);
   const [page,setPage]=useState(1);
   const [zoom,setZoom]=useState(1);
   const [drawer,setDrawer]=useState<'toc'|'thumbs'|null>(null);
-  const [flip,setFlip]=useState<'next'|'prev'|null>(null);
   const [error,setError]=useState('');
-  const shell=useRef<HTMLDivElement|null>(null);
-  const rtl=lang==='ar';
-  const mobile=typeof window!=='undefined'&&window.innerWidth<820;
-  const step=mobile?1:2;
+  const [progress,setProgress]=useState(0);
+  const [speaking,setSpeaking]=useState(false);
 
   useEffect(()=>{
     document.body.style.overflow='hidden';
-    const load=()=>{
-      const lib=(window as any).pdfjsLib;
-      if(!lib)return;
-      lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      lib.getDocument(ISSUE.pdf).promise.then((doc:any)=>setPdf(doc)).catch(()=>setError(lang==='ar'?'تعذر تحميل ملف المجلة. تأكد من رفع ملف PDF.':'Could not load the magazine PDF. Please confirm the PDF is uploaded.'));
-    };
-    if((window as any).pdfjsLib){load();return()=>{document.body.style.overflow=''}}
-    const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.async=true;s.onload=load;s.onerror=()=>setError('PDF reader library failed to load.');document.head.appendChild(s);
-    return()=>{document.body.style.overflow=''};
+    let cancelled=false;
+    const loadScript=(id:string,src:string)=>new Promise<void>((resolve,reject)=>{
+      if(document.getElementById(id)){resolve();return}
+      const s=document.createElement('script');s.id=id;s.src=src;s.async=true;s.onload=()=>resolve();s.onerror=()=>reject(new Error(src));document.head.appendChild(s);
+    });
+    (async()=>{
+      try{
+        await Promise.all([
+          (window as any).pdfjsLib?Promise.resolve():loadScript('pdfjs-lib','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'),
+          (window as any).St?.PageFlip?Promise.resolve():loadScript('st-pageflip','https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js')
+        ]);
+        if(cancelled)return;
+        const lib=(window as any).pdfjsLib;
+        lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const pdf=await lib.getDocument(ISSUE.pdf).promise;
+        pdfRef.current=pdf;
+        const rendered:string[]=[];
+        for(let i=1;i<=pdf.numPages;i++){
+          if(cancelled)return;
+          const pg=await pdf.getPage(i);
+          const viewport=pg.getViewport({scale:1.35});
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
+          const ctx=canvas.getContext('2d');
+          if(ctx){await pg.render({canvasContext:ctx,viewport}).promise;rendered.push(canvas.toDataURL('image/jpeg',.9))}
+          setProgress(Math.round((i/pdf.numPages)*100));
+        }
+        if(!cancelled)setImages(rendered);
+      }catch(e){if(!cancelled)setError(lang==='ar'?'تعذر تجهيز القارئ التفاعلي. يمكنك تنزيل ملف PDF مباشرة.':'Could not prepare the interactive reader. You can still download the PDF.')}
+    })();
+    return()=>{cancelled=true;document.body.style.overflow='';window.speechSynthesis?.cancel();try{flipRef.current?.destroy()}catch{}};
   },[lang]);
 
-  function animate(dir:'next'|'prev',target:number){if(target<1||target>ISSUE.pages)return;setFlip(dir);window.setTimeout(()=>{setPage(target);setFlip(null)},310)}
-  function goNext(){animate('next',Math.min(ISSUE.pages,page+step))}
-  function goPrev(){animate('prev',Math.max(1,page-step))}
+  useEffect(()=>{
+    if(!images.length||!bookHost.current||(flipRef.current))return;
+    const PageFlip=(window as any).St?.PageFlip;
+    if(!PageFlip)return;
+    const pf=new PageFlip(bookHost.current,{
+      width:520,height:735,size:'stretch',
+      minWidth:260,maxWidth:580,minHeight:368,maxHeight:820,
+      drawShadow:true,maxShadowOpacity:.58,showCover:true,usePortrait:true,
+      mobileScrollSupport:false,flippingTime:850,swipeDistance:22,useMouseEvents:true
+    });
+    pf.on('flip',(e:any)=>setPage(Number(e.data)+1));
+    pf.loadFromImages(images);
+    flipRef.current=pf;
+    return()=>{try{pf.destroy()}catch{};flipRef.current=null};
+  },[images]);
 
   useEffect(()=>{
-    const key=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose();if(e.key==='ArrowRight')rtl?goPrev():goNext();if(e.key==='ArrowLeft')rtl?goNext():goPrev();};
+    const key=(e:KeyboardEvent)=>{
+      if(e.key==='Escape')onClose();
+      if(e.key==='ArrowRight')flipRef.current?.flipNext('top');
+      if(e.key==='ArrowLeft')flipRef.current?.flipPrev('top');
+    };
     window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);
-  });
+  },[onClose]);
 
   async function full(){try{if(!document.fullscreenElement)await shell.current?.requestFullscreen();else await document.exitFullscreen()}catch{}}
   async function share(){try{if(navigator.share)await navigator.share({title:'AMAN Magazine',url:window.location.href});else await navigator.clipboard.writeText(window.location.href)}catch{}}
-  function jump(p:number){setPage(Math.max(1,Math.min(ISSUE.pages,p)));setDrawer(null)}
+  function jump(p:number){const target=Math.max(1,Math.min(ISSUE.pages,p));try{flipRef.current?.flip(target-1,'top')}catch{flipRef.current?.turnToPage(target-1)}setPage(target);setDrawer(null)}
+  function next(){flipRef.current?.flipNext('top')}
+  function prev(){flipRef.current?.flipPrev('top')}
+  async function speak(){
+    if(speaking){window.speechSynthesis.cancel();setSpeaking(false);return}
+    try{
+      const pdf=pdfRef.current;if(!pdf)return;
+      const pg=await pdf.getPage(page);const content=await pg.getTextContent();
+      const text=content.items.map((x:any)=>x.str).join(' ').replace(/\s+/g,' ').trim();
+      if(!text)return;
+      const utter=new SpeechSynthesisUtterance(text);
+      utter.lang=lang==='ar'?'ar-AE':'en-US';utter.rate=.92;utter.pitch=1;
+      const voices=window.speechSynthesis.getVoices();
+      const preferred=voices.find(v=>lang==='ar'?v.lang.toLowerCase().startsWith('ar'):v.lang.toLowerCase().startsWith('en'));
+      if(preferred)utter.voice=preferred;
+      utter.onend=()=>setSpeaking(false);utter.onerror=()=>setSpeaking(false);
+      setSpeaking(true);window.speechSynthesis.cancel();window.speechSynthesis.speak(utter);
+    }catch{setSpeaking(false)}
+  }
 
-  return <div className="reader-overlay" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
+  return <div className="reader-overlay premium-flip-reader" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
     <header className="reader-toolbar">
-      <div className="reader-title"><img src="/logo-emblem.png" alt=""/><span><b>{t.reader}</b><small>{ISSUE.issueAr} · {ISSUE.year}</small></span></div>
+      <div className="reader-title"><img src="/logo-transparent.png" alt="Alassmaa Media"/><span><b>{t.reader}</b><small>{ISSUE.issueAr} · {ISSUE.year}</small></span></div>
       <div className="reader-actions">
         <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
         <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><BookOpen size={18}/><span>{t.thumbs}</span></button>
-        <button onClick={()=>setZoom(v=>Math.min(1.5,v+.15))} title={t.zoom}><ZoomIn size={18}/></button>
-        <button onClick={()=>setZoom(v=>Math.max(.75,v-.15))} title={t.zoom}><ZoomOut size={18}/></button>
+        <button onClick={()=>setZoom(v=>Math.min(1.28,v+.08))} title={t.zoom}><ZoomIn size={18}/></button>
+        <button onClick={()=>setZoom(v=>Math.max(.82,v-.08))} title={t.zoom}><ZoomOut size={18}/></button>
+        <button onClick={speak} className={speaking?'is-speaking':''} title={lang==='ar'?'الاستماع للصفحة':'Listen to page'}>{speaking?<VolumeX size={18}/>:<Volume2 size={18}/>}</button>
         <button onClick={share} title={t.share}><Share2 size={18}/></button>
         <a href={ISSUE.pdf} download title={t.download}><Download size={18}/></a>
         <button onClick={full} title={t.fullscreen}><Maximize2 size={18}/></button>
@@ -125,23 +166,20 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
     {drawer&&<aside className="reader-drawer">
       <div className="drawer-head"><strong>{drawer==='toc'?t.contents:t.thumbs}</strong><button onClick={()=>setDrawer(null)}><X size={18}/></button></div>
       {drawer==='toc'?<div className="toc-list">{toc.map(item=><button key={item.page} onClick={()=>jump(item.page)}><span>{String(item.page).padStart(2,'0')}</span><b>{lang==='ar'?item.ar:item.en}</b></button>)}</div>:
-      <div className="thumb-grid">{Array.from({length:ISSUE.pages},(_,i)=><button key={i} onClick={()=>jump(i+1)} className={page===i+1?'active':''}><span>{String(i+1).padStart(2,'0')}</span></button>)}</div>}
+      <div className="thumb-grid visual-thumbs">{Array.from({length:ISSUE.pages},(_,i)=><button key={i} onClick={()=>jump(i+1)} className={page===i+1?'active':''}>{images[i]?<img src={images[i]} alt={'Page '+(i+1)}/>:null}<span>{String(i+1).padStart(2,'0')}</span></button>)}</div>}
     </aside>}
 
-    <main className="reader-stage">
+    <main className="reader-stage flip-stage">
       {error?<div className="reader-error"><BookOpen size={42}/><p>{error}</p><a href={ISSUE.pdf} target="_blank" rel="noreferrer">{t.download}</a></div>:
-      !pdf?<div className="reader-loading"><i/><span>{lang==='ar'?'جارٍ تجهيز الصفحات...':'Preparing pages...'}</span></div>:
-      <div className={'book-shell '+(flip?'flip-'+flip:'')+' '+(page===1?'cover-state':'')}>
-        <div className="book-glow"/>
-        <div className="page-sheet page-a"><PdfPage pdf={pdf} page={page} zoom={zoom}/><span className="page-number">{page}</span></div>
-        {!mobile&&page<ISSUE.pages&&<div className="page-sheet page-b"><PdfPage pdf={pdf} page={page+1} zoom={zoom}/><span className="page-number">{page+1}</span></div>}
-      </div>}
+      !images.length?<div className="reader-loading flip-preparing"><i/><span>{lang==='ar'?'جارٍ تحويل المجلة إلى صفحات تفاعلية...':'Preparing interactive flip pages...'}</span><b>{progress}%</b></div>:
+      <div className="flipbook-zoom" style={{transform:`scale(${zoom})`}}><div ref={bookHost} className="flipbook-host"/></div>}
+      <div className="drag-tip">{lang==='ar'?'اسحب طرف الصفحة أو اسحب بإصبعك للتقليب':'Drag a page corner or swipe to turn'}</div>
     </main>
 
     <footer className="reader-footer">
-      <button onClick={rtl?goNext:goPrev} disabled={page<=1}><ChevronLeft size={22}/><span>{t.prev}</span></button>
+      <button onClick={prev} disabled={page<=1}><ChevronLeft size={22}/><span>{t.prev}</span></button>
       <div className="reader-progress"><span>{String(page).padStart(2,'0')}</span><i><b style={{width:((page/ISSUE.pages)*100)+'%'}}/></i><span>{ISSUE.pages}</span></div>
-      <button onClick={rtl?goPrev:goNext} disabled={page>=ISSUE.pages}><span>{t.next}</span><ChevronRight size={22}/></button>
+      <button onClick={next} disabled={page>=ISSUE.pages}><span>{t.next}</span><ChevronRight size={22}/></button>
     </footer>
   </div>
 }
