@@ -209,14 +209,14 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
 }
 
 export default function Home(){
-  const [lang,setLang]=useState<Lang>('ar');const [theme,setTheme]=useState<Theme>('dark');const [menu,setMenu]=useState(false);const [reader,setReader]=useState(false);const [loading,setLoading]=useState(true);
+  const [lang,setLang]=useState<Lang>('ar');const [theme,setTheme]=useState<Theme>('dark');const [menu,setMenu]=useState(false);const [reader,setReader]=useState(false);const [loading,setLoading]=useState(true);const [loadingProgress,setLoadingProgress]=useState(0);
   const t=copy[lang];const wa=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||'971555470136';const phone=process.env.NEXT_PUBLIC_PHONE_NUMBER||'+971555470136';const contact=process.env.NEXT_PUBLIC_CONTACT_EMAIL||'alasmaamedia@gmail.com';const externalReader=process.env.NEXT_PUBLIC_FLIPPINGBOOK_URL||'https://online.flippingbook.com/view/14839249/';
   const ids=['home','current','archive','sections','advertise','contact'];
-  useEffect(()=>{const saved=localStorage.getItem('alassmaa-theme') as Theme|null;const l=localStorage.getItem('alassmaa-lang') as Lang|null;if(saved)setTheme(saved);if(l)setLang(l);const timer=window.setTimeout(()=>setLoading(false),1900);return()=>window.clearTimeout(timer)},[]);
+  useEffect(()=>{const saved=localStorage.getItem('alassmaa-theme') as Theme|null;const l=localStorage.getItem('alassmaa-lang') as Lang|null;if(saved)setTheme(saved);if(l)setLang(l);const start=Date.now();const interval=window.setInterval(()=>{const pct=Math.min(100,Math.round(((Date.now()-start)/5000)*100));setLoadingProgress(pct);if(pct>=100){window.clearInterval(interval);setLoading(false)}},50);return()=>window.clearInterval(interval)},[]);
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
   const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(100deg,rgba(12,2,18,.98),rgba(35,6,50,.90) 48%,rgba(18,5,24,.78) 100%)"}),[]);
   return <>
-    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="orbit-wrap main-orbit single-orbit-loader"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt="Alassmaa Media"/></div><i/><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
+    {loading&&<div className="cinema-loader"><div className="loader-halo"/><div className="orbit-wrap main-orbit single-orbit-loader"><span className="orbit-ring"/><img className="orbit-emblem" src="/logo-emblem.png" alt="Alassmaa Media"/></div><div className="loader-percentage">{loadingProgress}%</div><div className="loader-progress"><span style={{width:loadingProgress+'%'}}/></div><b>{lang==='ar'?'معرفة تعزز الوعي':'KNOWLEDGE THAT STRENGTHENS AWARENESS'}</b></div>}
     <header className="site-header">
       <a className="brand brand-original" href="#home"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/><span className="brand-sheen" aria-hidden="true"/></a>
       <nav className="desktop-nav">{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav>
@@ -272,7 +272,7 @@ export default function Home(){
 
     <footer className="footer"><div className="container footer-grid"><div><div className="footer-original-logo"><img src="/logo-transparent.png" alt="العصماء الإعلامية — Alassmaa Media LLC"/></div><p>{t.footer}</p></div><nav>{t.nav.map((n,i)=><a key={n} href={'#'+ids[i]}>{n}</a>)}</nav><div className="footer-social"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={19}/>Instagram</a><a href={'mailto:'+contact}><Mail size={19}/>{contact}</a></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} ALASSMAA MEDIA LLC. {t.rights}</span><a href="#home">↑ TOP</a></div></footer>
 
-    <div className="contact-floaters"><a className="float wa" href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" aria-label="WhatsApp"><span>◉</span></a><a className="float call" href={'tel:'+phone} aria-label="Call"><span>☎</span></a></div>
+    <div className="contact-floaters"><a className="float wa" href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" aria-label="WhatsApp"><img src="/whatsapp-icon.png" alt="WhatsApp"/></a><a className="float call" href={'tel:'+phone} aria-label="Call"><span>☎</span></a></div>
     {reader&&(externalReader?<ExternalMagazineReader lang={lang} url={externalReader} onClose={()=>setReader(false)}/>:<MagazineReader lang={lang} onClose={()=>setReader(false)}/>)}
   </>;
 }
