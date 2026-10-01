@@ -104,11 +104,13 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
     if(!images.length||!bookHost.current||(flipRef.current))return;
     const PageFlip=(window as any).St?.PageFlip;
     if(!PageFlip)return;
+    const portrait=window.matchMedia('(max-width: 820px)').matches;
     const pf=new PageFlip(bookHost.current,{
       width:520,height:735,size:'stretch',
-      minWidth:260,maxWidth:580,minHeight:368,maxHeight:820,
-      drawShadow:true,maxShadowOpacity:.58,showCover:true,usePortrait:true,
-      mobileScrollSupport:false,flippingTime:850,swipeDistance:22,useMouseEvents:true
+      minWidth:260,maxWidth:620,minHeight:368,maxHeight:875,
+      drawShadow:true,maxShadowOpacity:.68,showCover:true,usePortrait:portrait,
+      mobileScrollSupport:true,flippingTime:920,swipeDistance:18,useMouseEvents:true,
+      autoSize:true,startPage:0,startZIndex:10
     });
     pf.on('flip',(e:any)=>setPage(Number(e.data)+1));
     pf.loadFromImages(images);
@@ -149,7 +151,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
 
   return <div className="reader-overlay premium-flip-reader" ref={shell} role="dialog" aria-modal="true" aria-label={t.reader}>
     <header className="reader-toolbar">
-      <div className="reader-title"><img src="/logo-transparent.png" alt="Alassmaa Media"/><span><b>{t.reader}</b><small>{ISSUE.issueAr} · {ISSUE.year}</small></span></div>
+      <div className="reader-title"><div className="reader-brand-lockup"><img src="/logo-transparent.png" alt="Alassmaa Media"/></div><span><b>{t.reader}</b><small>{ISSUE.titleAr} · {ISSUE.issueAr} · {ISSUE.year}</small></span></div>
       <div className="reader-actions">
         <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
         <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><BookOpen size={18}/><span>{t.thumbs}</span></button>
@@ -173,7 +175,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
       {error?<div className="reader-error"><BookOpen size={42}/><p>{error}</p><a href={ISSUE.pdf} target="_blank" rel="noreferrer">{t.download}</a></div>:
       !images.length?<div className="reader-loading flip-preparing"><i/><span>{lang==='ar'?'جارٍ تحويل المجلة إلى صفحات تفاعلية...':'Preparing interactive flip pages...'}</span><b>{progress}%</b></div>:
       <div className="flipbook-zoom" style={{transform:`scale(${zoom})`}}><div ref={bookHost} className="flipbook-host"/></div>}
-      <div className="drag-tip">{lang==='ar'?'اسحب طرف الصفحة أو اسحب بإصبعك للتقليب':'Drag a page corner or swipe to turn'}</div>
+      <div className="drag-tip">{lang==='ar'?'اسحب زاوية الصفحة للتقليب • انقر مرتين للتكبير':'Drag a page corner to flip • double-click to zoom'}</div>
     </main>
 
     <footer className="reader-footer">
