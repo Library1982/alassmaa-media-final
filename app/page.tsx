@@ -112,7 +112,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
       <div className="reader-title"><img src="/logo-emblem.png" alt=""/><span><b>{t.reader}</b><small>{ISSUE.issueAr} · {ISSUE.year}</small></span></div>
       <div className="reader-actions">
         <button onClick={()=>setDrawer(drawer==='toc'?null:'toc')}><BookOpen size={18}/><span>{t.contents}</span></button>
-        <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><Thumbnails size={18}/><span>{t.thumbs}</span></button>
+        <button onClick={()=>setDrawer(drawer==='thumbs'?null:'thumbs')}><BookOpen size={18}/><span>{t.thumbs}</span></button>
         <button onClick={()=>setZoom(v=>Math.min(1.5,v+.15))} title={t.zoom}><ZoomIn size={18}/></button>
         <button onClick={()=>setZoom(v=>Math.max(.75,v-.15))} title={t.zoom}><ZoomOut size={18}/></button>
         <button onClick={share} title={t.share}><Share2 size={18}/></button>
