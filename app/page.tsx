@@ -7,8 +7,8 @@ type Lang='ar'|'en';
 type Theme='dark'|'light';
 
 const ISSUE={
-  titleAr:'أمان',titleEn:'AMAN',issueAr:'العدد 0',issueEn:'Issue 0',year:'2026',
-  cover:'/magazines/aman-issue-0/cover.webp',pdf:'/magazines/aman-issue-0/aman-issue-0.pdf',pages:23,
+  titleAr:'أمان',titleEn:'AMAN',issueAr:'العدد 1',issueEn:'Issue 1',year:'2026',
+  cover:'/magazines/aman-issue-0/aman-issue-1-cover.webp',pdf:'/magazines/aman-issue-0/aman-issue-0.pdf',pages:23,
 };
 
 const toc=[
@@ -261,7 +261,7 @@ export default function Home(){
       </div></section>
 
       <section id="archive" className="section archive-section"><div className="container"><div className="section-head split"><div><span className="section-kicker">03 / {t.archiveTag}</span><h2>{t.archiveTitle}</h2></div><p>{t.archiveText}</p></div>
-        <div className="archive-grid"><article className="issue-card featured"><div className="issue-card-cover"><img src={ISSUE.cover} alt="AMAN Issue 0"/><span>{t.latest}</span></div><div><small>{ISSUE.issueAr} · {ISSUE.year}</small><h3>{lang==='ar'?'مجلة أمان — الإصدار الحالي':'مجلة أمان — Current Issue'}</h3><button onClick={()=>setReader(true)}>{t.read}<ArrowUpRight size={17}/></button></div></article>
+        <div className="archive-grid"><article className="issue-card featured"><div className="issue-card-cover"><img src={ISSUE.cover} alt="AMAN Issue 1"/><span>{t.latest}</span></div><div><small>{ISSUE.issueAr} · {ISSUE.year}</small><h3>{lang==='ar'?'مجلة أمان — الإصدار الحالي':'مجلة أمان — Current Issue'}</h3><button onClick={()=>setReader(true)}>{t.read}<ArrowUpRight size={17}/></button></div></article>
         {[1,2].map(n=><article className="issue-card placeholder" key={n}><div className="placeholder-mark"><img src="/logo-emblem.png" alt=""/></div><div><small>{lang==='ar'?'الأرشيف جاهز للإصدار القادم':'ARCHIVE READY'}</small><h3>{t.coming}</h3></div></article>)}</div>
       </div></section>
 
