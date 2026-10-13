@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
+import LegalAdvisor from './LegalAdvisor';
 import {ArrowDown,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Download,Globe2,Instagram,Mail,Maximize2,Menu,Moon,Share2,Sun,Volume2,VolumeX,X,ZoomIn,ZoomOut} from 'lucide-react';
 
 type Lang='ar'|'en';
@@ -22,7 +23,7 @@ const toc=[
 
 const copy={
   ar:{
-    nav:['الرئيسية','العدد الحالي','الأعداد السابقة','أبواب المجلة','الإعلان معنا','تواصل معنا'],
+    nav:['الرئيسية','العدد الحالي','الأعداد السابقة','أبواب المجلة','الإعلان معنا','المستشار القانوني','تواصل معنا'],
     latest:'أحدث إصدار',heroTitle:'مجلة أمان',heroText:'مجلة شهرية قانونية، إدارية، أمنية، مجتمعية وثقافية. معرفة تعزز الوعي وتجمع الخبرة بالمستقبل.',
     read:'اقرأ العدد',download:'تحميل PDF',archive:'استكشف الأعداد',scroll:'اكتشف المجلة',
     currentTag:'العدد الحالي',currentTitle:'مساحة معرفية مهنية بروح إماراتية',currentText:'هذا الإصدار يجمع موضوعات في القيادة، القانون، الأمن، الإدارة، الذكاء الاصطناعي وقصص النجاح في تجربة تحريرية حديثة.',
@@ -36,7 +37,7 @@ const copy={
     prev:'السابق',next:'التالي',openIssue:'فتح العدد',coming:'إصدار جديد قريباً',
   },
   en:{
-    nav:['Home','Current Issue','Archive','Sections','Advertise','Contact'],
+    nav:['Home','Current Issue','Archive','Sections','Advertise','Legal Advisor','Contact'],
     latest:'LATEST ISSUE',heroTitle:'مجلة أمان',heroText:'A monthly professional publication spanning law, administration, security, society and culture — knowledge that strengthens awareness.',
     read:'Read Issue',download:'Download PDF',archive:'Browse Archive',scroll:'Discover the magazine',
     currentTag:'CURRENT ISSUE',currentTitle:'A professional knowledge platform with an Emirati identity',currentText:'This issue brings together leadership, law, security, management, artificial intelligence and success stories in a modern editorial experience.',
@@ -211,7 +212,7 @@ function MagazineReader({lang,onClose}:{lang:Lang,onClose:()=>void}){
 export default function Home(){
   const [lang,setLang]=useState<Lang>('ar');const [theme,setTheme]=useState<Theme>('dark');const [menu,setMenu]=useState(false);const [reader,setReader]=useState(false);const [loading,setLoading]=useState(true);const [loadingProgress,setLoadingProgress]=useState(0);
   const t=copy[lang];const wa=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||'971555470136';const phone=process.env.NEXT_PUBLIC_PHONE_NUMBER||'+971555470136';const contact=process.env.NEXT_PUBLIC_CONTACT_EMAIL||'alasmaamedia@gmail.com';const externalReader=process.env.NEXT_PUBLIC_FLIPPINGBOOK_URL||'https://online.flippingbook.com/view/14839249/';
-  const ids=['home','current','archive','sections','advertise','contact'];
+  const ids=['home','current','archive','sections','advertise','legal-advisor','contact'];
   useEffect(()=>{const saved=localStorage.getItem('alassmaa-theme') as Theme|null;const l=localStorage.getItem('alassmaa-lang') as Lang|null;if(saved)setTheme(saved);if(l)setLang(l);const start=Date.now();const interval=window.setInterval(()=>{const pct=Math.min(100,Math.round(((Date.now()-start)/5000)*100));setLoadingProgress(pct);if(pct>=100){window.clearInterval(interval);setLoading(false)}},50);return()=>window.clearInterval(interval)},[]);
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.dataset.theme=theme;localStorage.setItem('alassmaa-lang',lang);localStorage.setItem('alassmaa-theme',theme)},[lang,theme]);
   const heroStyle=useMemo(()=>({backgroundImage:"linear-gradient(100deg,rgba(12,2,18,.98),rgba(35,6,50,.90) 48%,rgba(18,5,24,.78) 100%)"}),[]);
@@ -267,6 +268,7 @@ export default function Home(){
 
       <section id="advertise" className="advertise-section"><div className="container advertise-grid"><div><span className="section-kicker">04 / {t.advertiseTag}</span><h2>{t.advertiseTitle}</h2><p>{t.advertiseText}</p><a className="primary-cta" href={'https://wa.me/'+wa+'?text='+encodeURIComponent(lang==='ar'?'مرحباً، أود الحصول على الباقة الإعلامية والإعلانية لمجلة أمان.':'Hello, I would like the مجلة أمان advertising media kit.')} target="_blank" rel="noreferrer">{t.advertise}<ArrowUpRight size={19}/></a></div><div className="ad-visual"><span>AMAN</span><b>MEDIA KIT</b><i/></div></div></section>
 
+      <LegalAdvisor/>
       <section id="contact" className="section contact-section"><div className="container contact-grid"><div><span className="section-kicker">05 / {t.contactTag}</span><h2>{t.contactTitle}</h2><p>{t.contactText}</p></div><div className="contact-links"><a href={'mailto:'+contact}><Mail size={20}/><span>{contact}</span><ArrowUpRight size={18}/></a><a href={'tel:'+phone}><span>☎</span><b>{phone}</b><ArrowUpRight size={18}/></a></div></div></section>
     </main>
 
