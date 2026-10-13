@@ -25,7 +25,7 @@ export default function LegalAdvisor(){
   <div className="legal-dock" dir={arabic?'rtl':'ltr'}>
    <button className="legal-dock-trigger" onClick={jump} aria-label={arabic?'استشارة قانونية':'Legal advisor'} title={arabic?'اسأل المستشار القانوني':'Ask a legal advisor'}>
     <span className="legal-dock-emblem"><LegalMark size={38}/></span>
-    <span className="legal-dock-caption">{arabic?'اسأل المستشار القانوني':'ASK A LEGAL ADVISOR'}</span>
+    <span className="legal-dock-caption"><strong>{arabic?'د. إبراهيم الملا':'Dr. Ibrahim Al Mulla'}</strong><small>{arabic?'المستشار القانوني • اسأل الآن':'Legal Advisor • Ask now'}</small></span>
    </button>
   </div>
   <section className="legal-section" id="legal-advisor" aria-label={arabic?'المستشار القانوني':'Legal advisor'}>
@@ -39,10 +39,11 @@ export default function LegalAdvisor(){
      <div className="legal-brand-lockup">
       <div className="legal-logo-frame"><LegalMark size={118}/></div>
       <div>
-       <b dir="rtl">الدكتور إبراهيم الملا</b>
-       <small dir="rtl">للمحاماة والاستشارات القانونية</small>
-       <b dir="ltr">DR. IBRAHIM AL MULLA</b>
-       <small dir="ltr">ADVOCATES & LEGAL CONSULTANTS</small>
+       <div className="legal-identity" dir={arabic?"rtl":"ltr"}>
+        <b>{arabic?"د. إبراهيم الملا":"Dr. Ibrahim Al Mulla"}</b>
+        <small>{arabic?"للمحاماة والاستشارات القانونية":"Advocates & Legal Consultants"}</small>
+        <span>{arabic?"Dr. Ibrahim Al Mulla":"د. إبراهيم الملا"}</span>
+       </div>
       </div>
      </div>
      <button className="legal-expand" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-controls="legal-contact-options">
