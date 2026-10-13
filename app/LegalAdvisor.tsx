@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useState} from 'react';
-import {ChevronDown, MessageCircle, Phone, Scale, X, ArrowUpRight} from 'lucide-react';
+import {ChevronDown, MessageCircle, Phone, ArrowUpRight} from 'lucide-react';
 import './legal-advisor.css';
 
 const NUMBER='971566382220';
