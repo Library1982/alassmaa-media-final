@@ -41,6 +41,7 @@ export default function LegalAdvisor(){
       <div>
        <div className="legal-identity" dir={arabic?"rtl":"ltr"}>
         <b>{arabic?"د. إبراهيم الملا":"Dr. Ibrahim Al Mulla"}</b>
+        <span className="legal-editor-title">{arabic?"رئيس تحرير مجلة أمان":"Editor-in-Chief, AMAN Magazine"}</span>
         <small>{arabic?"للمحاماة والاستشارات القانونية":"Advocates & Legal Consultants"}</small>
         <span>{arabic?"Dr. Ibrahim Al Mulla":"د. إبراهيم الملا"}</span>
        </div>

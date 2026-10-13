@@ -92,3 +92,19 @@ html[data-theme="light"] .legal-dock-emblem{background:#36243f;color:#f8e4b4}
  .legal-identity small{font-size:10px!important}
 }
 @media(prefers-reduced-motion:reduce){.legal-dock-caption{animation:none;max-width:220px;width:auto;opacity:1;margin-inline:9px 15px}}
+
+/* AMAN Magazine editor-in-chief credit */
+.legal-identity .legal-editor-title{
+ display:inline-flex;align-items:center;align-self:flex-start;
+ margin:4px 0 2px;padding:7px 12px;
+ font-size:12px;font-weight:800;line-height:1.5;
+ color:#f5ddaa;background:rgba(220,179,97,.12);
+ border:1px solid rgba(220,179,97,.32);
+ border-radius:99px;white-space:normal;
+}
+html[data-theme="light"] .legal-identity .legal-editor-title{
+ color:#735122;background:#fbefd7;border-color:#ddc38d;
+}
+@media(max-width:460px){
+ .legal-identity .legal-editor-title{font-size:10px;padding:5px 9px}
+}
